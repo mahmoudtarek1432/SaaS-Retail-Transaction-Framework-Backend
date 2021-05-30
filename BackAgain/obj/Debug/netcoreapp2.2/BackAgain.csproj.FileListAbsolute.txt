@@ -1,0 +1,17 @@
+C:\Users\wed\source\repos\BackAgain\BackAgain\bin\Debug\netcoreapp2.2\BackAgain.deps.json
+C:\Users\wed\source\repos\BackAgain\BackAgain\bin\Debug\netcoreapp2.2\BackAgain.runtimeconfig.json
+C:\Users\wed\source\repos\BackAgain\BackAgain\bin\Debug\netcoreapp2.2\BackAgain.runtimeconfig.dev.json
+C:\Users\wed\source\repos\BackAgain\BackAgain\bin\Debug\netcoreapp2.2\BackAgain.dll
+C:\Users\wed\source\repos\BackAgain\BackAgain\obj\Debug\netcoreapp2.2\BackAgain.csprojAssemblyReference.cache
+C:\Users\wed\source\repos\BackAgain\BackAgain\obj\Debug\netcoreapp2.2\BackAgain.csproj.CoreCompileInputs.cache
+C:\Users\wed\source\repos\BackAgain\BackAgain\obj\Debug\netcoreapp2.2\BackAgain.RazorAssemblyInfo.cache
+C:\Users\wed\source\repos\BackAgain\BackAgain\obj\Debug\netcoreapp2.2\BackAgain.RazorAssemblyInfo.cs
+C:\Users\wed\source\repos\BackAgain\BackAgain\obj\Debug\netcoreapp2.2\BackAgain.AssemblyInfoInputs.cache
+C:\Users\wed\source\repos\BackAgain\BackAgain\obj\Debug\netcoreapp2.2\BackAgain.AssemblyInfo.cs
+C:\Users\wed\source\repos\BackAgain\BackAgain\obj\Debug\netcoreapp2.2\BackAgain.RazorTargetAssemblyInfo.cache
+C:\Users\wed\source\repos\BackAgain\BackAgain\bin\Debug\netcoreapp2.2\BackAgain.pdb
+C:\Users\wed\source\repos\BackAgain\BackAgain\obj\Debug\netcoreapp2.2\BackAgain.dll
+C:\Users\wed\source\repos\BackAgain\BackAgain\obj\Debug\netcoreapp2.2\BackAgain.pdb
+C:\Users\wed\source\repos\BackAgain\BackAgain\bin\Debug\netcoreapp2.2\appsettings.Development.json
+C:\Users\wed\source\repos\BackAgain\BackAgain\bin\Debug\netcoreapp2.2\appsettings.json
+C:\Users\wed\source\repos\BackAgain\BackAgain\obj\Debug\netcoreapp2.2\BackAgain.genruntimeconfig.cache
