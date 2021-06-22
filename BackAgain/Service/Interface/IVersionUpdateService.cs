@@ -17,5 +17,9 @@ namespace BackAgain.Service.Interface
         TerminalMenuDto MenuUpdate(string userId, MenuReadDto menu);
 
         TerminalSettingsDto SettingsUpdate(string userId, UserSettingsReadDto settings);
+
+        Task OnVersionUpdate(string userId, string type);
+
+
     }
 }

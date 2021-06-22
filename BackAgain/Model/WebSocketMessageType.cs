@@ -23,6 +23,10 @@ namespace BackAgain.Model
         
         NewOrderPlaced,
 
+        NewItemAddedToOrder,
+
+        CommentAdded,
+
         OrderConfirmed,
 
         OrderComplete,

@@ -16,14 +16,16 @@ namespace BackAgain.Data.Implementation
             _ctx = ctx;
         }
 
-        public async void CreateVersion(VersionUpdateLog log)
+        public async Task CreateVersion(VersionUpdateLog log)
         {
            await _ctx._VersionUpdateLog.AddAsync(log);
         }
 
         public VersionUpdateLog GetLastVersioning(string userId)
         {
-            return _ctx._VersionUpdateLog.Where(v => v.UserId == userId).LastOrDefault();
+           
+            var ver = _ctx._VersionUpdateLog.Where(v => v.UserId == userId).AsEnumerable().LastOrDefault();
+            return ver;
         }
 
         public IEnumerable<VersionUpdateLog> GetNotUpdatedVersions(string userId, int MenuVersion, int SettingsVersion)

@@ -14,6 +14,11 @@ namespace BackAgain.Dto
         public string SecondaryColor { get; set; }
 
         public string AccentColor { get; set; }
+
+        public string LabelColor { get; set; }
+
+        public string MainTextColor { get; set; }
+
         [Required]
         public string BrandName { get; set; }
 

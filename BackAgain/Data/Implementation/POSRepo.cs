@@ -22,14 +22,14 @@ namespace BackAgain.Data
             {
                 await _ctx._POSs.AddAsync(model);
             }
-            catch(Exception e){
-                 
+            catch (Exception e) {
+
             }
         }
 
         public IEnumerable<POS> GetPOSsById(string UserId)
         {
-            return _ctx._POSs.Where(e => e.UserId == UserId);
+            return _ctx._POSs.Where(e => e.UserId == UserId).ToList();
         }
 
         public POS GetPOSBySerial(string Serial)
@@ -44,25 +44,40 @@ namespace BackAgain.Data
 
         public void UpdatePOS(POS user)
         {
-             _ctx.Update(user);
+            _ctx.Update(user);
         }
 
         public SocketConnection updatePOSConnId(string PosGuid, string connId)
         {
             var socketConnection = _ctx._SocketConnection.Where(SC => SC.PosID == _ctx._POSs.Where(T => T.Serial == PosGuid).FirstOrDefault().Id).FirstOrDefault();
+            if (socketConnection == null)
+            {
+                socketConnection = new SocketConnection
+                {
+                    ConnectionID = connId,
+                    PosID = _ctx._POSs.Where(T => T.Serial == PosGuid).FirstOrDefault().Id
+                };
+                _ctx._SocketConnection.Add(socketConnection);
+            }
             socketConnection.ConnectionID = connId;
             _ctx._SocketConnection.Update(socketConnection);
             return socketConnection;
         }
 
-        public SocketConnection GetPOSConnIDByUserId(string UserId)
+        public IEnumerable<SocketConnection> GetPOSConnIDByUserId(string UserId)
         {
-            return _ctx._SocketConnection.Where(sc => sc.PosID == _ctx._POSs.Where(p => p.UserId == UserId).FirstOrDefault().Id).FirstOrDefault();
+            
+            return _ctx._POSs.Where(p => p.UserId == UserId).Select(GetPOSSocketConnection);
+        }
+
+        public SocketConnection GetPOSConnIDByPOSSerial(string POSSerial)
+        {
+            return _ctx._POSs.Where(p => p.Serial == POSSerial).Select(GetPOSSocketConnection).FirstOrDefault();
         }
 
         public void SaveChanges()
         {
-            _ctx.SaveChangesAsync();
+            _ctx.SaveChanges();
         }
 
         //functional 
@@ -80,6 +95,11 @@ namespace BackAgain.Data
                 Serial = pos.Serial,
                 Name = pos.Name,
             };
+        }
+
+        public SocketConnection GetPOSSocketConnection(POS pos)
+        {
+            return _ctx._SocketConnection.Where(sc => sc.PosID == pos.Id).FirstOrDefault();
         }
     }
 }

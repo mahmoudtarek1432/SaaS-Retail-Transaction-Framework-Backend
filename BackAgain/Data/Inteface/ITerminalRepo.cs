@@ -17,6 +17,7 @@ namespace BackAgain.Data
         void RemoveTerminal(string Serial);
         void UpdateTerminal(Terminal user);
         SocketConnection updateTerminalConnId(string terminalGuid, string connId);
+        SocketConnection GetConnIDByTerminalSerial(string TerminalSerial);
         void SaveChanges();
 
         public TerminalReadDto getState(TerminalReadDto pos);

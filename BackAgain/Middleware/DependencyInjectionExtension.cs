@@ -2,6 +2,8 @@
 using BackAgain.Data.Implementation;
 using BackAgain.Data.Inteface;
 using BackAgain.Service;
+using BackAgain.Service.Implementation;
+using BackAgain.Service.Interface;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -20,9 +22,14 @@ namespace BackAgain.Middleware
             services.AddScoped<ISubscriptionRepo, SubscriptionRepo>();
             services.AddScoped<ITerminalRepo, TerminalRepo>();
             services.AddScoped<IPOSRepo, POSRepo>();
+            services.AddScoped<IOrderRepo, OrderRepo>();
+            services.AddScoped<IPOSRepo, POSRepo>();
             services.AddScoped<IMenuItemRepo, MenuItemRepo>();
             services.AddScoped<IMenuItemExtrasRepo, MenuItemExtrasRepo>();
             services.AddScoped<IMenuItemOptions, MenuItemOptionRepo>();
+            services.AddScoped<IMenuRepo, MenuRepo>();
+            services.AddScoped<IVerisonUpdateRepo, VerisonUpdateRepo>();
+            services.AddScoped<ITransactionRepo, TransactionRepo>();
             services.AddScoped<IMenuRepo, MenuRepo>();
             services.AddScoped<ICategoryRepo, CategoryRepo>();
             services.AddScoped<IUserService, UserService>();
@@ -34,6 +41,15 @@ namespace BackAgain.Middleware
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IMenuItemRepo, MenuItemRepo>();
             services.AddScoped<IMenuService, MenuService>();
+            services.AddScoped<IAdminOrderService, AdminOrderService>();
+            services.AddScoped<IOrderRepo, OrderRepo>();
+            services.AddScoped<IPOSAuthService, POSAuthService>();
+            services.AddScoped<IPosService, PosService>();
+            services.AddScoped<ITerminalAuthService, TerminalAuthService>();
+            services.AddScoped<ITerminalService, TerminalService>();
+            services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<IVersionUpdateService, VersionUpdateService>();
+            services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IWebSocketService, WebsocketService>();
 
             return services;

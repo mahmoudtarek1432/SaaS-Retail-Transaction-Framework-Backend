@@ -75,6 +75,15 @@ namespace BackAgain.Service
             {
                 settings.AccentColor = UserSettings.AccentColor;
             }
+            if (!string.IsNullOrEmpty(UserSettings.LabelColor))
+            {
+                settings.LabelColor = UserSettings.LabelColor;
+            }
+
+            if (!string.IsNullOrEmpty(UserSettings.MainTextColor))
+            {
+                settings.MainTextColor = UserSettings.MainTextColor;
+            }
             if (!string.IsNullOrEmpty(UserSettings.Icon))
             {
                 settings.Icon = UserSettings.Icon;

@@ -21,14 +21,14 @@ namespace BackAgain.Service.Implementation
             _mapper = mapper;
         }
 
-        public ClientResponseManager CreateTerminal(string UserId, TerminalWriteDto model)
+        public async Task<ClientResponseManager> CreateTerminal(string UserId, TerminalWriteDto model)
         {
             try
             {
                 var terminalData = _mapper.Map<Terminal>(model);
                 terminalData.Serial = Guid.NewGuid().ToString();
                 terminalData.UserId = UserId;
-                _TerminalRepo.CreateTerminal(terminalData);
+                await _TerminalRepo.CreateTerminal(terminalData);
                 _TerminalRepo.SaveChanges();
             }
             catch (Exception e)

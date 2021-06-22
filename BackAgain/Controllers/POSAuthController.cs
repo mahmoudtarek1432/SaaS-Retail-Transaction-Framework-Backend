@@ -33,7 +33,7 @@ namespace BackAgain.Controllers
             return new ClientResponseManager<string>
             {
                 IsSuccessfull = false,
-                Message = "Token not correct or expired"
+                Message = "Token not correct or expired",
             };
         }
 

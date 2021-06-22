@@ -21,10 +21,14 @@ namespace BackAgain.Data.Inteface
 
         IEnumerable<Transaction> getAllTransactions();
 
+        OrderTransaction GetOrderTransaction(string TransactionId);
+
         IEnumerable<TransactionAffiliates> GetTransactionAffiliatesByTransactionId(string TransactionId);
         Transaction GetTransactionById(string TransactionId);
 
         bool UpdateTransaction(Transaction transaction);
+
+        void addOrderTransaction(OrderTransaction ordertransaction);
 
         Task SaveChanges();
     }

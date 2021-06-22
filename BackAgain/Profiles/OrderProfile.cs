@@ -15,6 +15,11 @@ namespace BackAgain.Profiles
             CreateMap<Order, AdminOrderReadDto>();
             CreateMap<OrderItem, AdminOrderItemReadDto>();
             CreateMap<OrderItemExtra, AdminOrderItemExtraReadDto>();
+            CreateMap<OrderStatus, OrderStateReadDto>();
+            CreateMap<OrderWriteDto, Order>();
+            CreateMap<OrderItemWriteDto, OrderItem>();
+            CreateMap<OrderItemExtraWriteDto, OrderItemExtra>();
+            
         }
     }
 }

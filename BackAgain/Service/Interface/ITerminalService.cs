@@ -9,7 +9,7 @@ namespace BackAgain.Service.Interface
 {
     public interface ITerminalService
     {
-        public ClientResponseManager CreateTerminal(string UserId, TerminalWriteDto model);
+        public Task<ClientResponseManager> CreateTerminal(string UserId, TerminalWriteDto model);
 
         public ClientResponseManager<IEnumerable<TerminalReadDto>> getAllTerminalsByPosSerial(string userId, string PosSerial);
         public ClientResponseManager<Terminal> GetTerminalBySerial(string userId, string Terminalserial);

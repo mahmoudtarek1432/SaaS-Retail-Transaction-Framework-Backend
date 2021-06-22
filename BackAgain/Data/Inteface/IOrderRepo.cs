@@ -8,13 +8,15 @@ namespace BackAgain.Data.Inteface
 {
     public interface IOrderRepo
     {
-        public  Task<bool> CreateOrder(Order model);
+        public Task<Order> CreateOrder(Order model);
 
         Task<bool> CreateOrderItems(OrderItem model);
 
         Task<bool> CreateOrderExtras(List<OrderItemExtra> model);
 
-        public Task<bool> AddNewItemToOrder(int OrderId, OrderItem item);
+        bool CreateOrderComment(OrderComment orderComment);
+
+        public Task<bool> AddNewItemToOrder(string OrderId, IEnumerable<OrderItem> item);
 
         public void DeleteOrder(Order model);
 
@@ -29,6 +31,7 @@ namespace BackAgain.Data.Inteface
         List<Order> GetFullOrder(List<Order> Model);
 
         public bool  AddOrderState(string OrderId, int state);
+
 
          Task SaveChanges();
     }

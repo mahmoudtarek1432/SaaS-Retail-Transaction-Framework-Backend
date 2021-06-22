@@ -9,7 +9,7 @@ namespace BackAgain.Service
 {
     public interface IPosService
     {
-        public ClientResponseManager CreatePOS(string UserId, POSWriteDto model);
+        public Task<ClientResponseManager> CreatePOS(string UserId, POSWriteDto model);
 
         public ClientResponseManager<IEnumerable<POSReadDto>> getAllPOSsByUserId(string userId);
 

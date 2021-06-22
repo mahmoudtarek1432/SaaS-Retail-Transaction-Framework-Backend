@@ -14,7 +14,7 @@ namespace BackAgain.Profiles
             CreateMap<MenuItemWriteDto, MenuItem>();
             CreateMap<MenuItem, MenuItemReadDto>();
 
-            CreateMap<ItemOptionWriteDto, ItemExtra>();
+            CreateMap<ItemOptionWriteDto, ItemOption>();
             CreateMap<ItemOption, ItemOptionReadDto>();
 
             CreateMap<ItemExtrasWriteDto, ItemExtra>();

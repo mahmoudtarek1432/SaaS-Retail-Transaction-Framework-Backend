@@ -14,6 +14,7 @@ using BackAgain.Data;
 using BackAgain.Model;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
+using BackAgain.Service.Interface;
 
 namespace BackAgain.Controllers
 {
@@ -27,13 +28,15 @@ namespace BackAgain.Controllers
 
         private readonly ITerminalRepo _terminalRepo;
         private readonly IWebSocketService _SocketService;
+        private readonly IVersionUpdateService _VerRepo;
 
-        public TerminalSettingsConfigurationController(IUserSettingsService UserSettings, IHostingEnvironment webHost, ITerminalRepo terminalRepo, IWebSocketService ws)
+        public TerminalSettingsConfigurationController(IVersionUpdateService VerRepo, IUserSettingsService UserSettings, IHostingEnvironment webHost, ITerminalRepo terminalRepo, IWebSocketService ws)
         {
             _UserSettings = UserSettings;
             WebHost = webHost;
             _terminalRepo = terminalRepo;
             _SocketService = ws;
+            _VerRepo = VerRepo;
         }
 
         [HttpPost("")]
@@ -76,14 +79,13 @@ namespace BackAgain.Controllers
                     var result = await _UserSettings.UpdateUserSettings(userId, userSettings);
                     if(result.IsSuccessfull == true)
                     {
-                        var WSResponse = new WebSocketClientResponse { type = (int)WebSocketMessageType.SettingsUpdated, message = "Settings Has Been Updated" };
+                        var socketMessage = WebSocketMessageType.SettingsUpdated;
+                        var message = "Settings Has Been Updated";
 
-                        _terminalRepo.GetTerminalsConnIDByUserId(userId)
-                                     .Select(_SocketService.GetSocketConnection)
-                                     .Select(sc => WebsocketService.SendSocketMessage(sc,
-                                      WebsocketService.JSONSerialize(WSResponse)
-                                    )
-                                );
+                        _SocketService.SendToAllUserTerminals(userId, socketMessage, message, null);
+
+                        await _VerRepo.OnVersionUpdate(userId, "Settings");
+                        
                         return Ok(result);
                     }
                     return BadRequest(new ClientResponseManager

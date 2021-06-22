@@ -19,7 +19,7 @@ namespace BackAgain.Service.Implementation
             _TransactionRepo = TransactionRepo;
         }
 
-        public async Task CreateTransaction(string UserId, string reciverId, string IssuerId, int IssuerDeviceType, int reciverDeviceType, int transactionType, int? orderId)
+        public async Task<Transaction> CreateTransaction(string UserId, string reciverId, string IssuerId, int IssuerDeviceType, int reciverDeviceType, int transactionType, string orderId)
         {
             var transaction = new Transaction
             {
@@ -50,12 +50,26 @@ namespace BackAgain.Service.Implementation
                     TerminalSerial = (reciverDeviceType == TERMINAL) ? reciverId : null,
                     TransactionID = CommitedTransaction.Id
                 };
+               
                 await _TransactionRepo.AddTransactionAffiliate(reciver);
                 await _TransactionRepo.AddTransactionAffiliate(issuer);
+
+                if(orderId != null)
+                {
+                    var orderTrans = new OrderTransaction
+                    {
+                        OrderId = orderId,
+                        TransactionID = CommitedTransaction.Id
+                    };
+                    _TransactionRepo.addOrderTransaction(orderTrans);
+                }
+
                 await _TransactionRepo.SaveChanges();
 
                 //add orderId Later
+                
             }
+            return CommitedTransaction;
         }
 
         public void DeleteTransaction(string TransactionId)
@@ -69,7 +83,9 @@ namespace BackAgain.Service.Implementation
 
         public IEnumerable<Transaction> GetAllTransactions()
         {
-            return _TransactionRepo.getAllTransactions();
+            var transactions = _TransactionRepo.getAllTransactions();
+            var fullTransactions = transactions.Select(AddAffiliates).Select(AddOrderTransaction);
+            return fullTransactions;
         }
 
         public Transaction GetTransactionById(string TransactionId)
@@ -93,6 +109,22 @@ namespace BackAgain.Service.Implementation
 
             _TransactionRepo.UpdateTransaction( transaction);
             _TransactionRepo.SaveChanges();
+        }
+
+        Transaction AddAffiliates(Transaction T)
+        {
+            T.transactionAffiliates = _TransactionRepo.GetTransactionAffiliatesByTransactionId(T.Id);
+            return T;
+        }
+
+        Transaction AddOrderTransaction(Transaction T)
+        {
+            var order = _TransactionRepo.GetOrderTransaction(T.Id);
+            if(order != null)
+            {
+                T.OrderTransaction = order;
+            }
+            return T;
         }
     }
 }

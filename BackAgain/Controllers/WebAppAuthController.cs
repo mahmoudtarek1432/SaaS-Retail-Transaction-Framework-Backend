@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using BackAgain.Data.Inteface;
 using BackAgain.Dto;
 using BackAgain.Model;
 using BackAgain.Service;
+using BackAgain.Service.Interface;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -17,10 +20,12 @@ namespace BackAgain.Controllers
     public class WebAppAuthController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IVerisonUpdateRepo _VerRepo;
 
-        public WebAppAuthController(IUserService userservice, IConfiguration config)
+        public WebAppAuthController(IUserService userservice, IConfiguration config, IVerisonUpdateRepo verRepo)
         {
             _userService = userservice;
+            _VerRepo = verRepo;
         }
 
         [HttpPost("Register")]
@@ -29,6 +34,19 @@ namespace BackAgain.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _userService.RegisterClientAsync(model);
+
+                if (result.IsSuccessfull)
+                {
+                    var version = new VersionUpdateLog
+                    {
+                        MenuVersion = 0,
+                        SettingsVersion = 0,
+                        UserId = result.ResponseObject.Id,
+                        UpdateIn = 1
+                    };
+                    await _VerRepo.CreateVersion(version);
+                    _VerRepo.SaveChanges();
+                }
 
                 return result;
             }
@@ -45,6 +63,7 @@ namespace BackAgain.Controllers
         {
             if (ModelState.IsValid)
             {
+                User.FindFirst(ClaimTypes.NameIdentifier);
                 var result = await _userService.LoginClientAsync(model.Email, model.Password);
                 if (result.IsSuccessfull)
                 {

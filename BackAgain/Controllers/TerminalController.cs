@@ -26,12 +26,12 @@ namespace BackAgain.Controllers
         }
 
         [HttpPost("CreateTerminal")]
-        public ActionResult<ClientResponseManager> CreateNewTerminal([FromBody] TerminalWriteDto model)
+        public async Task<ActionResult<ClientResponseManager>> CreateNewTerminal([FromBody] TerminalWriteDto model)
         {
             if (ModelState.IsValid)
             {
                 var UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var result = _TerminalService.CreateTerminal(UserId, model);
+                var result = await _TerminalService.CreateTerminal(UserId, model);
                 return result;
             }
             return new ClientResponseManager

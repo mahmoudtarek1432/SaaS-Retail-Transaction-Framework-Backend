@@ -79,7 +79,7 @@ namespace BackAgain.Data
             return new ClientResponseManager<CustomIdentityUser>
             {
                 IsSuccessfull = false,
-                Message = "User didn't get created",
+                Message = "User didn't get created, "+ result.Errors.FirstOrDefault(),
                 Errors = result.Errors.Select(e => e.Description)
             };
         }

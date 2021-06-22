@@ -16,6 +16,8 @@ namespace BackAgain.Dto
 
     public class WebSocketClientResponse
     {
+        public string transactionId { get; set; }
+
         public string message { get; set; }
 
         public int type { get; set; }

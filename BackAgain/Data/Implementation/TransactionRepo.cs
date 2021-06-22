@@ -77,6 +77,11 @@ namespace BackAgain.Data.Implementation
             return _ctx._Transaction;
         }
 
+        public OrderTransaction GetOrderTransaction(string TransactionId)
+        {
+            return _ctx._OrderTransactions.Where(OT => OT.TransactionID == TransactionId).FirstOrDefault();
+        }
+
         public IEnumerable<TransactionAffiliates> GetTransactionAffiliatesByTransactionId(string TransactionId)
         {
             return _ctx._TransactionAffiliate.Where(TA => TA.TransactionID == TransactionId);
@@ -84,7 +89,9 @@ namespace BackAgain.Data.Implementation
 
         public Transaction GetTransactionById(string TransactionId)
         {
-            return _ctx._Transaction.Where(t => t.Id == TransactionId).FirstOrDefault();
+            var transaction =  _ctx._Transaction.Where(t => t.Id == TransactionId).FirstOrDefault();
+            transaction.OrderTransaction = _ctx._OrderTransactions.Where(OT => OT.TransactionID == TransactionId).FirstOrDefault();
+            return transaction;
         }
 
         public bool UpdateTransaction( Transaction transaction)
@@ -98,6 +105,11 @@ namespace BackAgain.Data.Implementation
                 return false;
             }
             return true;
+        }
+
+        public void addOrderTransaction(OrderTransaction ordertransaction)
+        {
+            _ctx._OrderTransactions.Add(ordertransaction);
         }
 
         public async Task SaveChanges()

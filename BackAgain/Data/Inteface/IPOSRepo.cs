@@ -15,7 +15,8 @@ namespace BackAgain.Data
         void RemovePOS(string Serial);
         void UpdatePOS(POS user);
         SocketConnection updatePOSConnId(string PosGuid, string connId);
-        SocketConnection GetPOSConnIDByUserId(string UserId);
+        IEnumerable<SocketConnection> GetPOSConnIDByUserId(string UserId);
+        SocketConnection GetPOSConnIDByPOSSerial(string POSSerial);
         void SaveChanges();
 
         public POSReadDto getState(POSReadDto pos);

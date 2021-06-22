@@ -23,6 +23,10 @@ namespace BackAgain.Model
 
         public string AccentColor { get; set; }
 
+        public string LabelColor { get; set; }
+
+        public string MainTextColor { get; set; }
+
         [ForeignKey("Theme")]
         public int ThemeId { get; set; }
         public Theme CurrentTheme { get; set; }

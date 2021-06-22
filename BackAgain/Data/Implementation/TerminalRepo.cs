@@ -24,7 +24,7 @@ namespace BackAgain.Data
 
         public IEnumerable<Terminal> GetTerminalsByUserId(string UserId)
         {
-            return _ctx._Terminals.Where(e => e.UserId == UserId);
+            return _ctx._Terminals.Where(e => e.UserId == UserId).ToList();
         }
 
         public Terminal GetTerminalBySerial(string Serial)
@@ -34,7 +34,7 @@ namespace BackAgain.Data
 
         public IEnumerable<Terminal> GetTerminalsByPOSId(string PosSerial)
         {
-            return _ctx._Terminals.Where(e => e.PosSerial == PosSerial);
+            return _ctx._Terminals.Where(e => e.PosSerial == PosSerial).ToList();
         }
 
         public void RemoveTerminal(string Serial)
@@ -50,6 +50,15 @@ namespace BackAgain.Data
         public SocketConnection updateTerminalConnId(string terminalGuid,string connId)
         {
             var socketConnection = _ctx._SocketConnection.Where( SC => SC.TerminalId == _ctx._Terminals.Where(T => T.Serial == terminalGuid).FirstOrDefault().Id).FirstOrDefault();
+            if (socketConnection == null)
+            {
+                socketConnection = new SocketConnection
+                {
+                    ConnectionID = connId,
+                    TerminalId = _ctx._Terminals.Where(T => T.Serial == terminalGuid).FirstOrDefault().Id
+                };
+                _ctx._SocketConnection.Add(socketConnection);
+            }
             socketConnection.ConnectionID = connId;
             _ctx._SocketConnection.Update(socketConnection);
 
@@ -61,9 +70,9 @@ namespace BackAgain.Data
             return _ctx._Terminals.Where( p => p.UserId == UserId).Select(TerminalSocket);
         }
 
-        public SocketConnection GetConnIDByTerminalId(int TerminalId)
+        public SocketConnection GetConnIDByTerminalSerial(string TerminalSerial)
         {
-            return _ctx._SocketConnection.Where(sc => sc.TerminalId == TerminalId).FirstOrDefault();
+            return _ctx._Terminals.Where(T => T.Serial == TerminalSerial).Select(TerminalSocket).FirstOrDefault();
         }
 
         //functional 
@@ -74,7 +83,7 @@ namespace BackAgain.Data
 
         public void SaveChanges()
         {
-            _ctx.SaveChangesAsync();
+            _ctx.SaveChanges();
         }
 
         public TerminalReadDto getState(TerminalReadDto Ter)

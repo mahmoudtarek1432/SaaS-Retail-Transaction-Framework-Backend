@@ -19,7 +19,6 @@ namespace BackAgain.Model
         public string OrderId { get; set; }
         public Order Order { get; set; }
 
-        [Required]
         public string ItemCode { get; set; } //menu item code+option+extra
 
         [Required]
@@ -35,6 +34,7 @@ namespace BackAgain.Model
         [Required]
         public int Quantity { get; set; }
 
+        [NotMapped]
         public List<OrderItemExtra> OrderExtras { get; set; }
 
     }

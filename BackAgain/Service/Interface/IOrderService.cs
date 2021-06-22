@@ -1,4 +1,5 @@
 ﻿using BackAgain.Dto;
+using BackAgain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +9,16 @@ namespace BackAgain.Service.Interface
 {
     public interface IOrderService
     {
-        ClientResponseManager CreateOrder(OrderWriteDto model);
-        ClientResponseManager AddToExistingOrder(int OrderId, IEnumerable<OrderWriteDto> NewOrders);
-        ClientResponseManager DeleteOrder(int OrderId);
-        public ClientResponseManager UpdateOrderStatus(string userId, string OrderId, int status);
+        Task<ClientResponseManager> AddToExistingOrder(string userId, string OrderId, IEnumerable<OrderItemWriteDto> NewOrders);
 
+        Task<ClientResponseManager<Order>> CreateOrder(OrderWriteDto model);
+
+        void AddCommentToOrder(OrderCommentWriteDto comment);
+
+        ClientResponseManager DeleteOrder(string userId, string OrderId);
+
+        Task<ClientResponseManager> UpdateOrderStatus(string UserId, string OrderId, int status);
+
+        Order GetOrderByid(string OrderId);
     }
 }

@@ -52,7 +52,8 @@ namespace BackAgain.Service
                 return new ClientResponseManager<string>
                 {
                     IsSuccessfull = true,
-                    Message = "POS logged in successfully"
+                    Message = "POS logged in successfully",
+                    ResponseObject = token
                 };
             }
             return new ClientResponseManager<string>

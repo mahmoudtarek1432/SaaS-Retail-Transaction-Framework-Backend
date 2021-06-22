@@ -24,12 +24,12 @@ namespace BackAgain.Controllers
         }
 
         [HttpPost("CreatePos")]
-        public ActionResult<ClientResponseManager> CreateNewPos([FromBody] POSWriteDto model)
+        public async Task<ActionResult<ClientResponseManager>> CreateNewPos([FromBody] POSWriteDto model)
         {
             if (ModelState.IsValid)
             {
                 var UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var result = _PosService.CreatePOS(UserId, model);
+                var result = await _PosService.CreatePOS(UserId, model);
                 return result;
             }
             return new ClientResponseManager

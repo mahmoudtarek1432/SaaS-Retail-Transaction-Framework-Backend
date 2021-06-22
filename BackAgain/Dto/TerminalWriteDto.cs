@@ -10,15 +10,12 @@ namespace BackAgain.Dto
     {
 
         [Required]
-        public string Serial { get; set; }
-
-        [Required]
         public int state { get; set; }
 
         [Required]
         public int Table { get; set; }
 
         [Required]
-        public int PosId { get; set; }
+        public string PosSerial { get; set; }
     }
 }

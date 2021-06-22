@@ -30,7 +30,8 @@ namespace BackAgain.Service
 
         public IEnumerable<ItemExtraReadDto> GetViewableItemExtras(string MenuItemOptionId)
         {
-            return _mapper.Map<IEnumerable<ItemExtraReadDto>>(GetItemExtras(MenuItemOptionId));
+            var extras = GetItemExtras(MenuItemOptionId);
+            return _mapper.Map<IEnumerable<ItemExtraReadDto>>(extras);
         }
 
         public async Task<ClientResponseManager<ItemExtra>> CreateMenuItem(string userId, ItemExtrasWriteDto MenuItemExtrasDto)

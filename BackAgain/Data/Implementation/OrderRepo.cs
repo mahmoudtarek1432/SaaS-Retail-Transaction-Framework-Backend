@@ -15,7 +15,7 @@ namespace BackAgain.Data.Implementation
         {
             _ctx = ctx;
         }
-        public async Task<bool> CreateOrder(Order model)
+        public async Task<Order> CreateOrder(Order model)
         {
             try
             {
@@ -23,16 +23,23 @@ namespace BackAgain.Data.Implementation
                 var order = (await _ctx._Order.AddAsync(model)).Entity;
                 order.OrderItem.ForEach(async OI =>
                 {
+                    OI.ItemCode = " ";
                     OI.OrderId = order.Id;
                     await CreateOrderItems(OI);
                 });
-                await _ctx._Orderstatus.AddAsync(order.OrderStatus[0]);
+                var state = new OrderStatus
+                {
+                    OrderId = model.Id,
+                    State = 1,
+                    Date = DateTime.Now
+                };
+                await _ctx._Orderstatus.AddAsync(state);
+                return order;
             }
             catch
             {
-                return false;
+                return null;
             }
-            return true;
         }
 
         public async Task<bool> CreateOrderItems(OrderItem model)
@@ -40,6 +47,7 @@ namespace BackAgain.Data.Implementation
             try
             {
                 model.Id = Guid.NewGuid().ToString();
+                model.ItemCode = " ";
                 var item = (await _ctx._OrderItem.AddAsync(model)).Entity;
                 item.OrderExtras.ForEach(I =>
                 {
@@ -69,11 +77,27 @@ namespace BackAgain.Data.Implementation
             return true;
         }
 
-        public async Task<bool> AddNewItemToOrder(int OrderId, OrderItem item)
+        public bool CreateOrderComment(OrderComment orderComment)
         {
             try
             {
-                await CreateOrderItems(item);
+                _ctx._orderComments.Add(orderComment);
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<bool> AddNewItemToOrder(string OrderId, IEnumerable<OrderItem> item)
+        {
+            try
+            {
+                foreach(var I in item)
+                {
+                    await CreateOrderItems(I);
+                }
             }
             catch
             {
@@ -121,7 +145,9 @@ namespace BackAgain.Data.Implementation
         public List<Order> GetFullOrder(List<Order> Model)
         {
             Model.ForEach(O => {
-                O.OrderItem = _ctx._OrderItem.Where(OI => OI.ItemId == O.Id).ToList();
+                O.OrderStatus = _ctx._Orderstatus.Where(S => S.OrderId == O.Id).ToList();
+                O.OrderItem = _ctx._OrderItem.Where(OI => OI.OrderId == O.Id).ToList();
+                O.OrderComment = _ctx._orderComments.Where(C => C.OrderId == O.Id).ToList();
                 O.OrderItem.ForEach(OI =>
                 {
                     OI.OrderExtras = _ctx._OrderItemExtras.Where(OE => OE.OrderItemId == O.Id).ToList();

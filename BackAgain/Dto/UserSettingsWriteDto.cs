@@ -18,6 +18,12 @@ namespace BackAgain.Dto
         public string AccentColor { get; set; }
 
         [Required]
+        public string LabelColor { get; set; }
+
+        [Required]
+        public string MainTextColor { get; set; }
+
+        [Required]
         public int ThemeId { get; set; }
 
         [Required]

@@ -13,13 +13,15 @@ namespace BackAgain.Dto
 
         public string POSSerial { get; set; }
 
+        public string TerminalSerial { get; set; }
+
         public int Table { get; set; }
 
         public DateTime Date { get; set; }
 
         public string AdditionalInfo { get; set; }
 
-        public List<OrderStatus> OrderStatus { get; set; }
+        public List<OrderStateReadDto> OrderStatus { get; set; }
 
         public List<OrderComment> OrderComment { get; set; }
 

@@ -40,7 +40,7 @@ namespace BackAgain.Data
 
         public UserSettings GetUserSettings(string UserId)
         {
-            return _ctx._UserSettings.Where(e => e.UserId == UserId).AsEnumerable().LastOrDefault();
+            return _ctx._UserSettings.Where(e => e.UserId == UserId).ToList().LastOrDefault();
         }
 
         public TerminalMode GetModeById(int ModeId)

@@ -23,7 +23,7 @@ namespace BackAgain.Middleware
             _manager = manager;
         }
 
-        public async Task InvokeAsync(HttpContext Context, ITerminalRepo terminalrepo, IPOSRepo POSRepo)
+        public async Task InvokeAsync(HttpContext Context)
         {
 
             if (Context.WebSockets.IsWebSocketRequest)
@@ -34,7 +34,7 @@ namespace BackAgain.Middleware
 
                 await SendConnIDAsync(webSocket, ConnId);
 
-                await Receive(webSocket, async (result, buffer) =>
+                await Receive(webSocket, (result, buffer) =>
                 {
                     if (result.MessageType == WebSocketMessageType.Text)
                     {
@@ -77,13 +77,13 @@ namespace BackAgain.Middleware
         public void AddTerminalSocket(string ConnId, string terminalGuID, TerminalRepo _terminalRepo)
         {
             _terminalRepo.updateTerminalConnId(terminalGuID, ConnId);
-
+            _terminalRepo.SaveChanges();
         }
 
         public void AddPosSocket(string ConnId, string PosGuID, POSRepo _POSRepo)
         {
             _POSRepo.updatePOSConnId(PosGuID, ConnId);
-
+            _POSRepo.SaveChanges();
         }
     }
 }

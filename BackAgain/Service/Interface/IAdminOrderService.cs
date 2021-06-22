@@ -21,6 +21,6 @@ namespace BackAgain.Service.Interface
         AdminOrderItemReadDto MapOrderItem(OrderItem OrderItem);
         AdminOrderItemExtraReadDto MapOrderItemExtra(OrderItemExtra OrderItemExtra);
 
-        IEnumerable<AdminOrderReadDto> OrderItemToAdminOrderItem(List<Order> model);
+        IEnumerable<AdminOrderReadDto> OrderToAdminOrder(List<Order> model);
     }
 }

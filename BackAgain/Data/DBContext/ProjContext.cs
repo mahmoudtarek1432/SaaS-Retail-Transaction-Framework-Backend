@@ -79,11 +79,21 @@ namespace BackAgain.Data
                    .HasForeignKey(O => O.POSSerial)
                    .HasPrincipalKey(P => P.Serial);
 
+            builder.Entity<Order>()
+                   .HasOne(O => O.Terminal)
+                   .WithMany(T => T.Orders)
+                   .HasForeignKey(O => O.TerminalSerial)
+                   .HasPrincipalKey(T => T.Serial);
+
             builder.Entity<Terminal>()
                    .HasOne(Ter => Ter.pos)
                    .WithMany(P => P.Terminal)
                    .HasForeignKey(Ter => Ter.PosSerial)
                    .HasPrincipalKey(P => P.Serial);
+
+            builder.Entity<UserSettings>()
+                   .HasIndex(S => S.UserId)
+                   .IsUnique(false);
         }
     }
 }

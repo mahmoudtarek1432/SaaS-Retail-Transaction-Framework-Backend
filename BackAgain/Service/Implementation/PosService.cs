@@ -20,14 +20,14 @@ namespace BackAgain.Service
             _mapper = mapper;
         }
 
-        public ClientResponseManager CreatePOS(string UserId, POSWriteDto model)
+        public async Task<ClientResponseManager> CreatePOS(string UserId, POSWriteDto model)
         {
             try
             {
                 var PosData = _mapper.Map<POS>(model);
                 PosData.Serial = Guid.NewGuid().ToString();
                 PosData.UserId = UserId;
-                _posRepo.CreatePOS(PosData);
+                await _posRepo.CreatePOS(PosData);
                 _posRepo.SaveChanges();
             }
             catch(Exception e)

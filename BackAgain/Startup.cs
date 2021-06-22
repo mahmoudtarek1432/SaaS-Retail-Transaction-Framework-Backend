@@ -42,13 +42,15 @@ namespace BackAgain
 
             services.AddSwaggerGen();
 
+            services.AddCors();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddControllersWithViews();
 
             services.AddDbContext<ProjContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DBConnection")));
 
-           // services.AddAutoMapper();
+            services.AddAutoMapper();
 
             services.AddIdentity<CustomIdentityUser, IdentityRole>(options =>
             {
@@ -89,6 +91,9 @@ namespace BackAgain
 
             services.AddWebSocketServerConnectionManager();
 
+            services.AddHostedService<WebSocketTransactionHostedService>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -115,19 +120,27 @@ namespace BackAgain
 
             app.UseWebSocketServer();
 
-            app.UseHttpsRedirection();
+            
 
-           app.UseMiddleware<JWTHeaderMiddleWare>();
+           //app.UseMiddleware<JWTHeaderMiddleWare>();
 
 
             //app.useauth must be before usemvc
             
             app.UseRouting();
 
+            app.UseStaticFiles();
+
+            app.UseCors(opt => opt.SetIsOriginAllowed(x => _ = true).AllowAnyMethod().AllowAnyHeader());
+
+            app.UseHttpsRedirection();
+
             app.UseAuthentication();
 
             app.UseAuthorization();
             // The equivalent of 'app.UseMvcWithDefaultRoute()'
+
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();

@@ -36,7 +36,7 @@ namespace BackAgain.Service.Implementation
                  var LimitedByDate = Orders.Where(O => O.Date.CompareTo(DateFrom) >= 0 && O.Date.CompareTo(DateTo) <= 0).ToList();
                  if(LimitedByDate != null)
                  {
-                    var AdminOrders = OrderItemToAdminOrderItem(LimitedByDate);
+                    var AdminOrders = OrderToAdminOrder(LimitedByDate);
                     return new ClientResponseManager<IEnumerable<AdminOrderReadDto>>{
                          IsSuccessfull = true,
                          ResponseObject = AdminOrders
@@ -59,7 +59,7 @@ namespace BackAgain.Service.Implementation
                 var FilteredOrders = Orders.Where(O => O.OrderStatus.LastOrDefault().State == 1 || O.OrderStatus.LastOrDefault().State == 2);
                 if(FilteredOrders != null)
                 {
-                    var AdminOrders = OrderItemToAdminOrderItem(FilteredOrders.ToList());
+                    var AdminOrders = OrderToAdminOrder(FilteredOrders.ToList());
                     return new ClientResponseManager<IEnumerable<AdminOrderReadDto>>
                     {
                         IsSuccessfull = true,
@@ -156,11 +156,12 @@ namespace BackAgain.Service.Implementation
             return OrderItemDTO;
         }
 
-        public IEnumerable<AdminOrderReadDto> OrderItemToAdminOrderItem(List<Order> model)
+        public IEnumerable<AdminOrderReadDto> OrderToAdminOrder (List<Order> model)
         {
             var AdminOrders = Mapper.Map<IEnumerable<AdminOrderReadDto>>(model).ToList();
             for (int i = 0; i < model.Count; i++)
             {
+                AdminOrders[i].OrderStatus = _mapper.Map<List<OrderStateReadDto>>(model[i].OrderStatus);
                 AdminOrders[i].OrderItem = model[i].OrderItem.Select(MapOrderItem).ToList();
                 for (int j = 0; j < model[i].OrderItem.Count; j++)
                 {

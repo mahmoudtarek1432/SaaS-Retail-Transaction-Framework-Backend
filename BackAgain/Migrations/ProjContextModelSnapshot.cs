@@ -112,6 +112,9 @@ namespace BackAgain.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
+                    b.Property<string>("WebSocketConnectionId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -283,6 +286,9 @@ namespace BackAgain.Migrations
                     b.Property<int>("Table")
                         .HasColumnType("int");
 
+                    b.Property<string>("TerminalSerial")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -290,6 +296,8 @@ namespace BackAgain.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("POSSerial");
+
+                    b.HasIndex("TerminalSerial");
 
                     b.HasIndex("UserId");
 
@@ -326,17 +334,13 @@ namespace BackAgain.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ItemCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ItemId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ItemOptionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MyPropertyId")
+                    b.Property<string>("ItemOptionId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("OrderId")
@@ -350,7 +354,7 @@ namespace BackAgain.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.HasIndex("MyPropertyId");
+                    b.HasIndex("ItemOptionId");
 
                     b.HasIndex("OrderId");
 
@@ -401,7 +405,7 @@ namespace BackAgain.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("MyProperty")
+                    b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OrderId")
@@ -644,6 +648,9 @@ namespace BackAgain.Migrations
                     b.Property<int>("FailedTries")
                         .HasColumnType("int");
 
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("MyPropertyId")
                         .HasColumnType("int");
 
@@ -782,9 +789,7 @@ namespace BackAgain.Migrations
 
                     b.HasIndex("ThemeId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique()
-                        .HasFilter("[UserId] IS NOT NULL");
+                    b.HasIndex("UserId");
 
                     b.ToTable("_UserSettings");
                 });
@@ -1033,6 +1038,11 @@ namespace BackAgain.Migrations
                         .HasForeignKey("POSSerial")
                         .HasPrincipalKey("Serial");
 
+                    b.HasOne("BackAgain.Model.Terminal", "Terminal")
+                        .WithMany("Orders")
+                        .HasForeignKey("TerminalSerial")
+                        .HasPrincipalKey("Serial");
+
                     b.HasOne("BackAgain.Model.CustomIdentityUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -1043,7 +1053,7 @@ namespace BackAgain.Migrations
             modelBuilder.Entity("BackAgain.Model.OrderComment", b =>
                 {
                     b.HasOne("BackAgain.Model.Order", "Order")
-                        .WithMany("OrderComment")
+                        .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1059,10 +1069,10 @@ namespace BackAgain.Migrations
 
                     b.HasOne("BackAgain.Model.ItemOption", "MyProperty")
                         .WithMany()
-                        .HasForeignKey("MyPropertyId");
+                        .HasForeignKey("ItemOptionId");
 
                     b.HasOne("BackAgain.Model.Order", "Order")
-                        .WithMany("OrderItem")
+                        .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1077,7 +1087,7 @@ namespace BackAgain.Migrations
                         .IsRequired();
 
                     b.HasOne("BackAgain.Model.OrderItem", "OrderItem")
-                        .WithMany("OrderExtras")
+                        .WithMany()
                         .HasForeignKey("OrderItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1086,7 +1096,7 @@ namespace BackAgain.Migrations
             modelBuilder.Entity("BackAgain.Model.OrderStatus", b =>
                 {
                     b.HasOne("BackAgain.Model.Order", "Order")
-                        .WithMany("OrderStatus")
+                        .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1179,7 +1189,7 @@ namespace BackAgain.Migrations
                         .HasPrincipalKey("Serial");
 
                     b.HasOne("BackAgain.Model.Transaction", "Transaction")
-                        .WithMany()
+                        .WithMany("transactionAffiliates")
                         .HasForeignKey("TransactionID");
                 });
 
@@ -1198,7 +1208,7 @@ namespace BackAgain.Migrations
                         .IsRequired();
 
                     b.HasOne("BackAgain.Model.CustomIdentityUser", "User")
-                        .WithMany()
+                        .WithMany("settings")
                         .HasForeignKey("UserId");
                 });
 

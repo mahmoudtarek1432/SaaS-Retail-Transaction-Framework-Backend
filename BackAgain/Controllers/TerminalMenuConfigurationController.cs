@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BackAgain.Dto;
 using BackAgain.Model;
 using BackAgain.Service;
+using BackAgain.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,13 +24,20 @@ namespace BackAgain.Controllers
         public IMenuItemExtraService MenuExtraService { get; }
         public IMenuItemOptionService ItemOptionService { get; }
 
-        public TerminalMenuConfigurationController(IMenuService menuService, ICategoryService CatService,IMenuItemService MenuService,IMenuItemExtraService MenuExtraService,IMenuItemOptionService itemOptionService)
+        private readonly IWebSocketService _SocketService;
+        private readonly IVersionUpdateService _VerRepo;
+
+        public TerminalMenuConfigurationController(IMenuService menuService, ICategoryService CatService,IMenuItemService MenuService,
+                                                   IMenuItemExtraService MenuExtraService,IMenuItemOptionService itemOptionService,
+                                                   IVersionUpdateService verRepo, IWebSocketService SocketService)
         {
             this.MenuService = menuService;
             this.CatService = CatService;
             this.MenuItemService = MenuService;
             this.MenuExtraService = MenuExtraService;
             ItemOptionService = itemOptionService;
+            _SocketService = SocketService;
+            _VerRepo = verRepo;
         }
 
         [HttpGet("")]
@@ -68,6 +76,12 @@ namespace BackAgain.Controllers
                     var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                     var result = await CatService.CreateCategory(userId, model);
 
+                    if (result.IsSuccessfull)
+                    {
+                        await _VerRepo.OnVersionUpdate(userId, "Menu");
+                        _SocketService.SendToAllUserTerminals(userId, WebSocketMessageType.MenuUpdated, "Category Added",null);
+                    }
+
                     return result;
                 }
                 return new ClientResponseManager
@@ -93,6 +107,12 @@ namespace BackAgain.Controllers
                     var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                     var result = await MenuItemService.CreateMenuItem(userId, model);
 
+                    if (result.IsSuccessfull)
+                    {
+                        await _VerRepo.OnVersionUpdate(userId, "Menu");
+                        _SocketService.SendToAllUserTerminals(userId, WebSocketMessageType.MenuUpdated, "Menu Item Added", null);
+                    }
+
                     return result;
                 }
                 return new ClientResponseManager<MenuItem>
@@ -117,6 +137,12 @@ namespace BackAgain.Controllers
                 {
                     var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                     var result = await MenuExtraService.CreateMenuItem(userId, model);
+
+                    if (result.IsSuccessfull)
+                    {
+                        await _VerRepo.OnVersionUpdate(userId, "Menu");
+                        _SocketService.SendToAllUserTerminals(userId, WebSocketMessageType.MenuUpdated, "Menu Item Extra Added", null);
+                    }
 
                     return result;
                 }
@@ -144,6 +170,12 @@ namespace BackAgain.Controllers
                     var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                     var result = await ItemOptionService.CreateMenuItemOption(userId, model);
 
+                    if (result.IsSuccessfull)
+                    {
+                        await _VerRepo.OnVersionUpdate(userId, "Menu");
+                        _SocketService.SendToAllUserTerminals(userId, WebSocketMessageType.MenuUpdated, "Menu Item Option Added", null);
+                    }
+
                     return result;
                 }
                 return new ClientResponseManager<ItemOption>
@@ -160,7 +192,7 @@ namespace BackAgain.Controllers
         }
 
         [HttpDelete("{ElementId}/{ElementType}")]
-        public ActionResult<ClientResponseManager> DeleteMenuEntity(string ElementId,int ElementType)
+        public async Task<ActionResult<ClientResponseManager>> DeleteMenuEntity(string ElementId,int ElementType)
         {
             if (ModelState.IsValid)
             {
@@ -183,6 +215,10 @@ namespace BackAgain.Controllers
                     {
                         ItemOptionService.DeleteItemOptionById(ElementId);
                     }
+
+                    await _VerRepo.OnVersionUpdate(userId, "Menu");
+                    _SocketService.SendToAllUserTerminals(userId, WebSocketMessageType.MenuUpdated, "Menu Rollback", null);
+
                     return new ClientResponseManager
                     {
                         IsSuccessfull = true,
@@ -203,13 +239,21 @@ namespace BackAgain.Controllers
         }
 
         [HttpPatch("Update/Category")]
-        public ActionResult<ClientResponseManager> UpdateCategory([FromBody] CategoryWriteDto model)
+        public async Task<ActionResult<ClientResponseManager>> UpdateCategory([FromBody] CategoryWriteDto model)
         {
             if (ModelState.IsValid)
             {
                 if(User != null)
                 {
+                    var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                     var result = CatService.UpdateCategory(model);
+
+                    if (result.IsSuccessfull)
+                    {
+                        await _VerRepo.OnVersionUpdate(userId, "Menu");
+                        _SocketService.SendToAllUserTerminals(userId, WebSocketMessageType.MenuUpdated, "Category Updated", null);
+                    }
+
                     return result;
                 }
                 return new ClientResponseManager
@@ -226,13 +270,21 @@ namespace BackAgain.Controllers
         }
 
         [HttpPatch("Update/MenuItem")]
-        public ActionResult<ClientResponseManager> UpdateMenuItem([FromBody] MenuItemWriteDto model)
+        public async Task<ActionResult<ClientResponseManager>> UpdateMenuItem([FromBody] MenuItemWriteDto model)
         {
             if (ModelState.IsValid)
             {
                 if (User != null)
                 {
+                    var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                     var result = MenuItemService.UpdateMenuItem(model);
+
+                    if (result.IsSuccessfull)
+                    {
+                        await _VerRepo.OnVersionUpdate(userId, "Menu");
+                        _SocketService.SendToAllUserTerminals(userId, WebSocketMessageType.MenuUpdated, "Menu Item Updated", null);
+                    }
+
                     return result;
                 }
                 return new ClientResponseManager
@@ -249,13 +301,20 @@ namespace BackAgain.Controllers
         }
 
         [HttpPatch("Update/MenuItemExtra")]
-        public ActionResult<ClientResponseManager> UpdateMenuItemExtra([FromBody] ItemExtrasWriteDto model)
+        public async Task<ActionResult<ClientResponseManager>> UpdateMenuItemExtra([FromBody] ItemExtrasWriteDto model)
         {
             if (ModelState.IsValid)
             {
                 if (User != null)
                 {
+                    var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                     var result = MenuExtraService.UpdateMenuItem(model);
+
+                    if (result.IsSuccessfull)
+                    {
+                        await _VerRepo.OnVersionUpdate(userId, "Menu");
+                        _SocketService.SendToAllUserTerminals(userId, WebSocketMessageType.MenuUpdated, "Menu Item Extra Updated", null);
+                    }
                     return result;
                 }
                 return new ClientResponseManager
@@ -272,13 +331,19 @@ namespace BackAgain.Controllers
         }
 
         [HttpPatch("Update/MenuItemOptions")]
-        public ActionResult<ClientResponseManager> UpdateMenuItemOption([FromBody] ItemOptionWriteDto model)
+        public async Task<ActionResult<ClientResponseManager>> UpdateMenuItemOption([FromBody] ItemOptionWriteDto model)
         {
             if (ModelState.IsValid)
             {
                 if (User != null)
                 {
+                    var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                     var result = ItemOptionService.UpdateMenuItemOption(model);
+                    if (result.IsSuccessfull)
+                    {
+                        await _VerRepo.OnVersionUpdate(userId, "Menu");
+                        _SocketService.SendToAllUserTerminals(userId, WebSocketMessageType.MenuUpdated, "Menu Item Option Updated", null);
+                    }
                     return result;
                 }
                 return new ClientResponseManager

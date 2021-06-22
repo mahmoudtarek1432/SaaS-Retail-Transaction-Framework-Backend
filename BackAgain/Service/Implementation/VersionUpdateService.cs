@@ -25,8 +25,8 @@ namespace BackAgain.Service.Implementation
             bool menuUpToDate = true;
             bool settingsUpToDate = true;
             version.ForEach( v => { 
-                menuUpToDate = (menuUpToDate && v.MenuVersion > CurrentVersion.MenuVersion)? false : true;
-                settingsUpToDate = (settingsUpToDate && v.SettingsVersion > CurrentVersion.SettingsVersion) ? false : true;
+                menuUpToDate = (menuUpToDate && v.MenuVersion > CurrentVersion.MenuVersion)? false : menuUpToDate;
+                settingsUpToDate = (settingsUpToDate && v.SettingsVersion > CurrentVersion.SettingsVersion) ? false : settingsUpToDate;
                 if (menuUpToDate == false & settingsUpToDate == false) return;
             });
 
@@ -93,6 +93,36 @@ namespace BackAgain.Service.Implementation
                 version = (int)latestVersion.SettingsVersion
             };
             return UserSettings;
+        }
+
+        public async Task OnVersionUpdate(string userId, string type)
+        {
+            var version = new VersionUpdateLog();
+            try
+            {
+                version = _VersionUpdateRepo.GetLastVersioning(userId);
+            }
+            catch(Exception e)
+            {
+                throw new Exception();
+            }
+
+            if (version != null)
+            {
+                if (type == "Menu")
+                {
+                    version.UpdateIn = 1;
+                    version.MenuVersion += 1;
+                }
+                else if (type == "Settings")
+                {
+                    version.UpdateIn = 2;
+                    version.SettingsVersion += 1;
+                }
+            }
+            version.ID = 0;
+            await _VersionUpdateRepo.CreateVersion(version);
+            _VersionUpdateRepo.SaveChanges();
         }
     }
 }

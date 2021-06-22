@@ -21,6 +21,10 @@ namespace BackAgain.Model
         [ForeignKey("SubscriptionType")]
         public int SubType { get; set; }
 
+        public IEnumerable<UserSettings> settings { get; set; }
+
+        public string WebSocketConnectionId { get; set; }
+
        // public string PublicKey { get; set; }
     }
 }

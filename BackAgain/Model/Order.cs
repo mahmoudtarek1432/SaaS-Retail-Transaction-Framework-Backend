@@ -23,16 +23,22 @@ namespace BackAgain.Model
         public string POSSerial { get; set; }
         public POS pos { get; set; }
 
+        [ForeignKey("Terminal")]
+        public string TerminalSerial { get; set; }
+        public Terminal Terminal { get; set; }
         public int Table { get; set; }
 
         public DateTime Date { get; set; }
 
         public string AdditionalInfo { get; set; }
 
+        [NotMapped]
         public List<OrderStatus> OrderStatus { get; set; }
 
+        [NotMapped]
         public List<OrderComment> OrderComment { get; set; }
 
+        [NotMapped]
         public List<OrderItem> OrderItem { get; set; }
     }
 }

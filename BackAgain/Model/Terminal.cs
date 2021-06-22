@@ -34,5 +34,7 @@ namespace BackAgain.Model
         public SocketConnection TerminalConnection { get; set; }
 
         public IEnumerable<TransactionAffiliates> Transaction { get; set; }
+
+        public IEnumerable<Order> Orders { get; set; }
     }
 }
