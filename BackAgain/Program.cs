@@ -17,19 +17,26 @@ namespace BackAgain
     {
         public static void Main(string[] args)
         {
-            var webHost = CreateWebHostBuilder(args).Build();
+            var webhost = CreateWebHostBuilder(args)
+
+                .UseKestrel()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseUrls("http://192.168.43.118:84")
+                .UseIISIntegration()
+                .UseStartup<Startup>().Build();
 
            //Clear the Transaction Table before running the server
-            using (var scope = webHost.Services.CreateScope())
+            using (var scope = webhost.Services.CreateScope())
             {
                 var DBContext = (ProjContext)scope.ServiceProvider.GetRequiredService(typeof(ProjContext));
+                DBContext._OrderTransactions.RemoveRange(DBContext._OrderTransactions.ToList());
                 DBContext._Transaction.RemoveRange(DBContext._Transaction.ToList());
                 DBContext._TransactionAffiliate.RemoveRange(DBContext._TransactionAffiliate.ToList());
 
                 DBContext.SaveChanges();
             }
-        
-            webHost.Run();
+
+            webhost.Run();
 
 
         }

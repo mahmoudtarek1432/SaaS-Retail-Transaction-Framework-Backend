@@ -12,7 +12,7 @@ namespace BackAgain.Service.Interface
         //user version returns a state code in which the state of the terminal
         //is returned
 
-        ClientResponseManager<VersionUpdateTypes> CheckTerminalVersion(string userId, VersionReadDto CurrentVersion);
+        ClientResponseManager<int> CheckTerminalVersion(string userId, VersionReadDto CurrentVersion);
 
         TerminalMenuDto MenuUpdate(string userId, MenuReadDto menu);
 

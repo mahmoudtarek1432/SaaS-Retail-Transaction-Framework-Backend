@@ -9,8 +9,8 @@ namespace BackAgain.Service
 {
     public interface ICategoryService
     {
-        Task<ClientResponseManager> CreateCategory(string userId, CategoryWriteDto CategoryDto);
-        ClientResponseManager UpdateCategory(CategoryWriteDto CategoryDto);
+        Task<ClientResponseManager<CategoryReadDto>> CreateCategory(string userId, CategoryWriteDto CategoryDto);
+        ClientResponseManager<CategoryReadDto> UpdateCategory(CategoryWriteDto CategoryDto);
         MenuReadDto GetFunctionalCategory(MenuReadDto menu);
         IEnumerable<CategoryReadDto> GetViewableCategory(string MenuId);
         void DeleteCategory(string categoryId);

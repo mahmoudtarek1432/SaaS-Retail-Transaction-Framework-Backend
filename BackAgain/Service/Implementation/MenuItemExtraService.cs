@@ -34,7 +34,7 @@ namespace BackAgain.Service
             return _mapper.Map<IEnumerable<ItemExtraReadDto>>(extras);
         }
 
-        public async Task<ClientResponseManager<ItemExtra>> CreateMenuItem(string userId, ItemExtrasWriteDto MenuItemExtrasDto)
+        public async Task<ClientResponseManager<ItemExtraReadDto>> CreateMenuItem(string userId, ItemExtrasWriteDto MenuItemExtrasDto)
         {
             var ItemExtra = _mapper.Map<ItemExtra>(MenuItemExtrasDto);
             ItemExtra.UserId = userId;
@@ -45,53 +45,55 @@ namespace BackAgain.Service
             if (Item.UserId == userId) { 
                 try
                 {
-                    await _ItemExtraRepo.CreateMenuItemExtra(ItemExtra);
+                    ItemExtra = await _ItemExtraRepo.CreateMenuItemExtra(ItemExtra);
                     _ItemExtraRepo.SaveChanges();
                 }
                 catch (Exception e)
                 {
-                    return new ClientResponseManager<ItemExtra>
+                    return new ClientResponseManager<ItemExtraReadDto>
                     {
                         
                         Message = "Menu Item Creation Failed.",
                         IsSuccessfull = false
                     };
                 }
-                return new ClientResponseManager<ItemExtra>
+                return new ClientResponseManager<ItemExtraReadDto>
                 {
-                    ResponseObject = ItemExtra,
+                    ResponseObject = _mapper.Map<ItemExtraReadDto>(ItemExtra),
                     Message = "menu item Successfully created.",
                     IsSuccessfull = true
                 };
             }
-            return new ClientResponseManager<ItemExtra>
+            return new ClientResponseManager<ItemExtraReadDto>
             {
-                ResponseObject = ItemExtra,
+                
                 Message = "Menu Item Creation Failed, MenuItemId Does not belong to the user",
                 IsSuccessfull = false
             };
         }
 
-        public ClientResponseManager UpdateMenuItem(ItemExtrasWriteDto itemDto)
+        public ClientResponseManager<ItemExtraReadDto> UpdateMenuItem(ItemExtrasWriteDto itemDto)
         {
+            var item = _mapper.Map<ItemExtra>(itemDto);
             try
             {
-                var item = _mapper.Map<ItemExtra>(itemDto);
                 _ItemExtraRepo.UpdateMenuItemExtra(item);
                 _ItemExtraRepo.SaveChanges();
             }
             catch (Exception e)
             {
-                return new ClientResponseManager
+                return new ClientResponseManager<ItemExtraReadDto>
                 {
-                    Message = "item Successfully updated.",
-                    IsSuccessfull = true
+                    Message = "item update not successful. ",
+                    IsSuccessfull = false,
+                    
                 };
             }
-            return new ClientResponseManager
+            return new ClientResponseManager<ItemExtraReadDto>
             {
-                Message = "item update not successful.",
-                IsSuccessfull = false
+                Message = "item Successfully updated.",
+                IsSuccessfull = true,
+                ResponseObject = _mapper.Map<ItemExtraReadDto>(item)
             };
         }
 

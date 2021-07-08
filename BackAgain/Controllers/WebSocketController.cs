@@ -16,15 +16,17 @@ namespace BackAgain.Controllers
     {
         private readonly ITerminalRepo _TerminalRepo;
         private readonly IPOSRepo _POSRepo;
+        private readonly IUserRepo _UserRepo;
 
-        public WebSocketController(ITerminalRepo terminalrepo, IPOSRepo POSRepo)
+        public WebSocketController(ITerminalRepo terminalrepo, IPOSRepo POSRepo, IUserRepo userRepo)
         {
             _TerminalRepo = terminalrepo;
             _POSRepo = POSRepo;
+            _UserRepo = userRepo;
         }
 
-        [HttpPost("Terminal")]
-        public ActionResult<ClientResponseManager> AddTerminalSocket([FromBody] string ConnId)
+        [HttpPost("Terminal/{ConnId}")]
+        public ActionResult<ClientResponseManager> AddTerminalSocket( string ConnId)
         {
             if (ModelState.IsValid)
             {
@@ -82,5 +84,34 @@ namespace BackAgain.Controllers
                 Message = "model is not valid"
             };
         }
-    }
+
+        [HttpPost("WebApp/{ConnId}")]
+        public async Task<ActionResult<ClientResponseManager>> AddWebAppSocket ( string ConnId)
+        {
+            if (ModelState.IsValid)
+            {
+                var UserId = User.FindFirst(ClaimTypes.NameIdentifier); // has the pos or terminal serial
+                if (UserId != null)
+                {
+                    await _UserRepo.UpdateWebAppConnId(UserId.Value, ConnId);
+
+                    return new ClientResponseManager
+                    {
+                        IsSuccessfull = true,
+                        Message = "The WebApp socket has been registered"
+                    };
+                }
+                return BadRequest(new ClientResponseManager
+                {
+                    IsSuccessfull = true,
+                    Message = "user login is not correct"
+                });
+            }
+            return new ClientResponseManager
+            {
+                IsSuccessfull = true,
+                Message = "model is not valid"
+            };
+        }
+    }   
 }

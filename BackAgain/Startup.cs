@@ -133,7 +133,7 @@ namespace BackAgain
 
             app.UseCors(opt => opt.SetIsOriginAllowed(x => _ = true).AllowAnyMethod().AllowAnyHeader());
 
-            app.UseHttpsRedirection();
+           // app.UseHttpsRedirection();
 
             app.UseAuthentication();
 

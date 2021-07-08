@@ -51,12 +51,14 @@ namespace BackAgain.Service
             var WSResponse = new WebSocketClientResponse { type = (int)MessageType, message = Message, transactionId = TransactionId };
             try
             {
-                _TerminalRepo.GetTerminalsConnIDByUserId(userId)
-                             .Select(GetSocketConnection)
-                             .Select(sc => WebsocketService.SendSocketMessage(sc,
-                             WebsocketService.JSONSerialize(WSResponse)
-                    )
-                );
+                var terminals = _TerminalRepo.GetTerminalsConnIDByUserId(userId).ToList();
+                var SocketConnections = GetSocketConnection(terminals[0]);
+
+                if (SocketConnections != null)
+                {
+                    WebsocketService.SendSocketMessage(SocketConnections,
+                                 WebsocketService.JSONSerialize(WSResponse));
+                }
             }
             catch
             {
@@ -86,23 +88,23 @@ namespace BackAgain.Service
         public async Task<bool> SendToPOSBySerial(string UserId, string POSSerial, WebSocketMessageType MessageType, string Message, string TransactionId)
         {
             var WSResponse = new WebSocketClientResponse { type = (int)MessageType, message = Message, transactionId = TransactionId };
-            try
-            {
-                WebSocket Socket = GetSocketConnection(_PosRepo.GetPOSConnIDByPOSSerial(POSSerial));
+         
+                var posConId = _PosRepo.GetPOSConnIDByPOSSerial(POSSerial);
+                WebSocket Socket = GetSocketConnection(posConId);
+                if(Socket != null)
+                {
                 WebsocketService.SendSocketMessage(Socket, WebsocketService.JSONSerialize(WSResponse));
+                }
 
                 var user = (await _UserRepo.GetUserById(UserId)).ResponseObject;
                 var userSocket = _Manager.getAllSockets().Where(Sc => Sc.Key == user.WebSocketConnectionId);
-                if (userSocket != null)
+                if (userSocket.FirstOrDefault().Key != null)
                 {
                     WebsocketService.SendSocketMessage(userSocket.FirstOrDefault().Value, WebsocketService.JSONSerialize(WSResponse));
                 }
-            }
-            catch
-            {
+           
                 return false;
-            }
-            return true;
+           
         }
 
         public bool SendToTerminalBySerial(string TerSerial, WebSocketMessageType MessageType, string Message, string TransactionId)
@@ -111,7 +113,11 @@ namespace BackAgain.Service
             try
             {
                 WebSocket Socket = GetSocketConnection(_TerminalRepo.GetConnIDByTerminalSerial(TerSerial));
-                WebsocketService.SendSocketMessage(Socket, WebsocketService.JSONSerialize(WSResponse));
+                if(Socket != null)
+                {
+                    WebsocketService.SendSocketMessage(Socket, WebsocketService.JSONSerialize(WSResponse));
+                }
+               
             }
             catch
             {

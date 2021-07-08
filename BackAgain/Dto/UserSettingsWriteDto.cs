@@ -34,5 +34,8 @@ namespace BackAgain.Dto
 
         [Required]
         public int TerminalModeId { get; set; }
+
+        [Required]
+        public int PaymentMethod { get; set; }
     }
 }

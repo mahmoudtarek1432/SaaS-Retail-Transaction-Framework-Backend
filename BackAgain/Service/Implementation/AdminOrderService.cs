@@ -56,10 +56,10 @@ namespace BackAgain.Service.Implementation
             var Orders = _OrderRepo.getOrdersByUserId(UserId);
             if(Orders != null)
             {
-                var FilteredOrders = Orders.Where(O => O.OrderStatus.LastOrDefault().State == 1 || O.OrderStatus.LastOrDefault().State == 2);
+                var FilteredOrders = Orders;//.Where(O => O.OrderStatus.LastOrDefault().State == 1 || O.OrderStatus.LastOrDefault().State == 2);
                 if(FilteredOrders != null)
                 {
-                    var AdminOrders = OrderToAdminOrder(FilteredOrders.ToList());
+                    var AdminOrders = OrderToAdminOrder(FilteredOrders.ToList()).OrderBy(O => O.Date);
                     return new ClientResponseManager<IEnumerable<AdminOrderReadDto>>
                     {
                         IsSuccessfull = true,
@@ -131,13 +131,13 @@ namespace BackAgain.Service.Implementation
                 Image = MenuItem.Image,
                 ItemId = MenuItem.Id,
                 Quantity = OrderItem.Quantity,
-                ItemCode = OrderItem.ItemCode
+                ItemCode = MenuItem.Code
             };
             if (OrderItem.ItemOptionId != null)
             {
                 OrderItemDTO.Name = ItemOption.Name;
                 OrderItemDTO.Price = ItemOption.Price;
-
+                OrderItemDTO.ItemCode = ItemOption.Code;
             }
             return OrderItemDTO;
         }
@@ -151,7 +151,8 @@ namespace BackAgain.Service.Implementation
                 Code = MenuItemExtra.Code,
                 Image = MenuItemExtra.Image,
                 ItemExtraId = MenuItemExtra.Id,
-                OrderExtraId = OrderItemExtra.Id
+                OrderExtraId = OrderItemExtra.Id,
+                
             };
             return OrderItemDTO;
         }

@@ -18,7 +18,7 @@ namespace BackAgain.Service.Implementation
             _VersionUpdateRepo = vur;
         }
 
-        public ClientResponseManager<VersionUpdateTypes> CheckTerminalVersion(string userId, VersionReadDto CurrentVersion)
+        public ClientResponseManager<int> CheckTerminalVersion(string userId, VersionReadDto CurrentVersion)
         {
             
             var version = _VersionUpdateRepo.GetNotUpdatedVersions(userId, CurrentVersion.MenuVersion, CurrentVersion.SettingsVersion).ToList();
@@ -32,41 +32,41 @@ namespace BackAgain.Service.Implementation
 
             if(menuUpToDate == true && settingsUpToDate == true)
             {
-                return new ClientResponseManager<VersionUpdateTypes>
+                return new ClientResponseManager<int>
                 {
                     IsSuccessfull = true,
                     Message = "terminal up to date",
-                    ResponseObject = VersionUpdateTypes.UpToDate
+                    ResponseObject = (int)VersionUpdateTypes.UpToDate
                 };
             }
             if (menuUpToDate == false && settingsUpToDate == true)
             {
-                return new ClientResponseManager<VersionUpdateTypes>
+                return new ClientResponseManager<int>
                 {
                     IsSuccessfull = true,
                     Message = "Terminal Menu OutDated",
-                    ResponseObject = VersionUpdateTypes.MenuOutDated
+                    ResponseObject = (int)VersionUpdateTypes.MenuOutDated
                 };
             }
             if (menuUpToDate == true && settingsUpToDate == false)
             {
-                return new ClientResponseManager<VersionUpdateTypes>
+                return new ClientResponseManager<int>
                 {
                     IsSuccessfull = true,
                     Message = "Terminal settings OutDated",
-                    ResponseObject = VersionUpdateTypes.SettingsOutdated
+                    ResponseObject = (int)VersionUpdateTypes.SettingsOutdated
                 };
             }
             if (menuUpToDate == false && settingsUpToDate == false)
             {
-                return new ClientResponseManager<VersionUpdateTypes>
+                return new ClientResponseManager<int>
                 {
                     IsSuccessfull = true,
                     Message = "Terminal Settings and Menu are OutDated",
-                    ResponseObject = VersionUpdateTypes.MenuAndSettingsOutdated
+                    ResponseObject = (int)VersionUpdateTypes.MenuAndSettingsOutdated
                 };
             }
-            return new ClientResponseManager<VersionUpdateTypes>
+            return new ClientResponseManager<int>
             {
                 IsSuccessfull = true,
                 Message = "error occured"

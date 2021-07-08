@@ -91,6 +91,7 @@ namespace BackAgain.Service
 
             settings.ThemeId = UserSettings.ThemeId;
             settings.TerminalModeId = UserSettings.TerminalModeId;
+            settings.PaymentMethod = UserSettings.PaymentMethod;
             
             var result = await _SettingsRepo.UpdateUserSettings(settings);
             _SettingsRepo.SaveChanges();

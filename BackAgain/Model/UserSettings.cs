@@ -38,5 +38,7 @@ namespace BackAgain.Model
         [ForeignKey("Termode")]
         public int TerminalModeId { get; set; }
         public TerminalMode Termode { get; set; }
+
+        public int PaymentMethod { get; set; }
     }
 }

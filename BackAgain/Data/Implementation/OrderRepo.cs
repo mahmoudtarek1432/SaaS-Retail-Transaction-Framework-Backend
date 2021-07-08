@@ -19,6 +19,7 @@ namespace BackAgain.Data.Implementation
         {
             try
             {
+                model.OrderItem.ForEach(oi => oi.ItemOptionId = (oi.ItemOptionId == "" || oi.ItemOptionId == null) ? null : oi.ItemOptionId);
                 model.Id = Guid.NewGuid().ToString();
                 var order = (await _ctx._Order.AddAsync(model)).Entity;
                 order.OrderItem.ForEach(async OI =>
@@ -49,12 +50,13 @@ namespace BackAgain.Data.Implementation
                 model.Id = Guid.NewGuid().ToString();
                 model.ItemCode = " ";
                 var item = (await _ctx._OrderItem.AddAsync(model)).Entity;
+                
                 item.OrderExtras.ForEach(I =>
                 {
                     I.OrderItemId = item.Id;
 
                 });
-                await CreateOrderExtras(item.OrderExtras);
+                var orderExtra = await CreateOrderExtras(model.OrderExtras);
             }
             catch
             {
@@ -150,7 +152,7 @@ namespace BackAgain.Data.Implementation
                 O.OrderComment = _ctx._orderComments.Where(C => C.OrderId == O.Id).ToList();
                 O.OrderItem.ForEach(OI =>
                 {
-                    OI.OrderExtras = _ctx._OrderItemExtras.Where(OE => OE.OrderItemId == O.Id).ToList();
+                    OI.OrderExtras = _ctx._OrderItemExtras.Where(OE => OE.OrderItemId == OI.Id).ToList();
                 });
             });
             return Model;

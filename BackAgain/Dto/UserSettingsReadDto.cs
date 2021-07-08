@@ -33,5 +33,7 @@ namespace BackAgain.Dto
 
         [Required]
         public int ThemeId { get; set; }
+
+        public int PaymentMethod { get; set; }
     }
 }

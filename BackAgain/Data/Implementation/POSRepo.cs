@@ -59,20 +59,24 @@ namespace BackAgain.Data
                 };
                 _ctx._SocketConnection.Add(socketConnection);
             }
-            socketConnection.ConnectionID = connId;
-            _ctx._SocketConnection.Update(socketConnection);
+            else
+            {
+                socketConnection.ConnectionID = connId;
+                _ctx._SocketConnection.Update(socketConnection);
+            }
+           
             return socketConnection;
         }
 
         public IEnumerable<SocketConnection> GetPOSConnIDByUserId(string UserId)
         {
             
-            return _ctx._POSs.Where(p => p.UserId == UserId).Select(GetPOSSocketConnection);
+            return _ctx._POSs.Where(p => p.UserId == UserId).ToList().Select(GetPOSSocketConnection);
         }
 
         public SocketConnection GetPOSConnIDByPOSSerial(string POSSerial)
         {
-            return _ctx._POSs.Where(p => p.Serial == POSSerial).Select(GetPOSSocketConnection).FirstOrDefault();
+            return _ctx._POSs.Where(p => p.Serial == POSSerial).ToList().Select(GetPOSSocketConnection).FirstOrDefault();
         }
 
         public void SaveChanges()

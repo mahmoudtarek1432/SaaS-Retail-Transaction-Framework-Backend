@@ -11,10 +11,8 @@ namespace BackAgain.Dto
     {
         public string UserId { get; set; }
 
-        [Required]
         public string POSSerial { get; set; }
 
-        [Required]
         public string TerminalSerial { get; set; }
 
         [Required]
@@ -23,7 +21,6 @@ namespace BackAgain.Dto
         [Required]
         public DateTime Date { get; set; }
 
-        [Required]
         public string AdditionalInfo { get; set; }
 
         [Required]

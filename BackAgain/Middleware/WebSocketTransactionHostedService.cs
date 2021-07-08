@@ -34,31 +34,34 @@ namespace BackAgain.Middleware
             while (!stoppingToken.IsCancellationRequested)
             {
                 //get all the transactions
-                var transactions = _TransactionServcie.GetAllTransactions();
-                transactions.ToList().ForEach(T =>
+                var transactions = _TransactionServcie.GetAllTransactions().ToList();
+                var x = 10;
+                transactions.ForEach(T =>
                {
                    if (T.FailedTries >= 3)
                    {
                        _TransactionServcie.DeleteTransaction(T.Id);
-                       if (T.OrderTransaction != null)
-                       {
-                           T.transactionAffiliates.Where(TA => TA.Affiliation == "Issuer" && TA.PosSerial != null)
-                                                  .Select( async TA =>
-                                                (TA.PosSerial != null) ?
-                                                await _WebsocketService.SendToPOSBySerial(T.UserId, TA.PosSerial, Model.WebSocketMessageType.TerminalDisconnected, T.Message, T.Id) :
-                                                _WebsocketService.SendToTerminalBySerial(TA.TerminalSerial, Model.WebSocketMessageType.POSNotConnected, T.Message, T.Id)
-                                            );
-                       }
+                   }
+                   if (T.OrderTransaction != null)
+                   {
+                       
+                       T.transactionAffiliates.Where(TA => TA.Affiliation == "Issuer" && TA.PosSerial != null).ToList()
+                                              .Select(async TA =>
+                                           (TA.PosSerial != null) ?
+                                           await _WebsocketService.SendToPOSBySerial(T.UserId, TA.PosSerial, Model.WebSocketMessageType.TerminalDisconnected, T.Message, T.Id) :
+                                           _WebsocketService.SendToTerminalBySerial(TA.TerminalSerial, Model.WebSocketMessageType.POSNotConnected, T.Message, T.Id)
+                                        );
+                       _TransactionServcie.IncreaseTransactionFailedTries(T.Id);
                    }
                    else
                    {
-                       T.transactionAffiliates.Where(TA => TA.Affiliation == "Reciver" && TA.PosSerial != null)
+                       T.transactionAffiliates.Where(TA => TA.Affiliation == "Reciver" && TA.PosSerial != null).ToList()
                                               .Select(async TA =>
                                                    (TA.PosSerial != null) ?
                                                    await _WebsocketService.SendToPOSBySerial(T.UserId, TA.PosSerial, (Model.WebSocketMessageType)T.Type, T.Message, T.Id) :
                                                    _WebsocketService.SendToTerminalBySerial( TA.TerminalSerial, (Model.WebSocketMessageType)T.Type, T.Message, T.Id)
                                               );
-
+                       _TransactionServcie.IncreaseTransactionFailedTries(T.Id);
                    }
                });
                 await Task.Delay(new TimeSpan(0, 5, 0));

@@ -177,5 +177,12 @@ namespace BackAgain.Data
                 Message = "email confirmed successfully",
             };
         }
+
+        public async Task UpdateWebAppConnId(string userId, string ConnId)
+        {
+            var user = await _UserManager.FindByIdAsync(userId);
+            user.WebSocketConnectionId = ConnId;
+            await _UserManager.UpdateAsync(user);
+        }
     }
 }

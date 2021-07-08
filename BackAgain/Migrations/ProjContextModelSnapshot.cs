@@ -768,6 +768,15 @@ namespace BackAgain.Migrations
                     b.Property<string>("Icon")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("LabelColor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MainTextColor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
                     b.Property<string>("PrimaryColor")
                         .HasColumnType("nvarchar(max)");
 

@@ -67,7 +67,7 @@ namespace BackAgain.Controllers
 
 
         [HttpPost("Category")]
-        public async Task<ActionResult<ClientResponseManager>> CreateCategory([FromBody] CategoryWriteDto model)
+        public async Task<ActionResult<ClientResponseManager<CategoryReadDto>>> CreateCategory([FromBody] CategoryWriteDto model)
         {
             if (ModelState.IsValid)
             {
@@ -75,6 +75,7 @@ namespace BackAgain.Controllers
                 {
                     var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                     var result = await CatService.CreateCategory(userId, model);
+                    
 
                     if (result.IsSuccessfull)
                     {
@@ -84,13 +85,13 @@ namespace BackAgain.Controllers
 
                     return result;
                 }
-                return new ClientResponseManager
+                return new ClientResponseManager<CategoryReadDto>
                 {
                     IsSuccessfull = false,
                     Message = "user not logged in"
                 };
             }
-            return new ClientResponseManager
+            return new ClientResponseManager<CategoryReadDto>
             {
                 IsSuccessfull = false,
                 Message = "model is not valid"
@@ -98,7 +99,7 @@ namespace BackAgain.Controllers
         }
 
         [HttpPost("MenuItem")]
-        public async Task<ActionResult<ClientResponseManager<MenuItem>>> CreateMenuItem([FromBody] MenuItemWriteDto model)
+        public async Task<ActionResult<ClientResponseManager<MenuItemReadDto>>> CreateMenuItem([FromBody] MenuItemWriteDto model)
         {
             if (ModelState.IsValid)
             {
@@ -115,13 +116,13 @@ namespace BackAgain.Controllers
 
                     return result;
                 }
-                return new ClientResponseManager<MenuItem>
+                return new ClientResponseManager<MenuItemReadDto>
                 {
                     IsSuccessfull = false,
                     Message = "user not logged in"
                 };
             }
-            return new ClientResponseManager<MenuItem>
+            return new ClientResponseManager<MenuItemReadDto>
             {
                 IsSuccessfull = false,
                 Message = "model is not valid"
@@ -129,7 +130,7 @@ namespace BackAgain.Controllers
         }
 
         [HttpPost("MenuItemExtras")]
-        public async Task<ActionResult<ClientResponseManager<ItemExtra>>> CreateMenuItemExtra([FromBody] ItemExtrasWriteDto model)
+        public async Task<ActionResult<ClientResponseManager<ItemExtraReadDto>>> CreateMenuItemExtra([FromBody] ItemExtrasWriteDto model)
         {
             if (ModelState.IsValid)
             {
@@ -146,13 +147,13 @@ namespace BackAgain.Controllers
 
                     return result;
                 }
-                return new ClientResponseManager<ItemExtra>
+                return new ClientResponseManager<ItemExtraReadDto>
                 {
                     IsSuccessfull = false,
                     Message = "user not logged in"
                 };
             }
-            return new ClientResponseManager<ItemExtra>
+            return new ClientResponseManager<ItemExtraReadDto>
             {
                 IsSuccessfull = false,
                 Message = "model is not valid"
@@ -161,7 +162,7 @@ namespace BackAgain.Controllers
 
 
         [HttpPost("MenuItemOption")]
-        public async Task<ActionResult<ClientResponseManager<ItemOption>>> CreateMenuItemOption([FromBody] ItemOptionWriteDto model)
+        public async Task<ActionResult<ClientResponseManager<ItemOptionReadDto>>> CreateMenuItemOption([FromBody] ItemOptionWriteDto model)
         {
             if (ModelState.IsValid)
             {
@@ -178,13 +179,13 @@ namespace BackAgain.Controllers
 
                     return result;
                 }
-                return new ClientResponseManager<ItemOption>
+                return new ClientResponseManager<ItemOptionReadDto>
                 {
                     IsSuccessfull = false,
                     Message = "user not logged in"
                 };
             }
-            return new ClientResponseManager<ItemOption>
+            return new ClientResponseManager<ItemOptionReadDto>
             {
                 IsSuccessfull = false,
                 Message = "model is not valid"
@@ -239,7 +240,7 @@ namespace BackAgain.Controllers
         }
 
         [HttpPatch("Update/Category")]
-        public async Task<ActionResult<ClientResponseManager>> UpdateCategory([FromBody] CategoryWriteDto model)
+        public async Task<ActionResult<ClientResponseManager<CategoryReadDto>>> UpdateCategory([FromBody] CategoryWriteDto model)
         {
             if (ModelState.IsValid)
             {
@@ -256,13 +257,13 @@ namespace BackAgain.Controllers
 
                     return result;
                 }
-                return new ClientResponseManager
+                return new ClientResponseManager<CategoryReadDto>
                 {
                     IsSuccessfull = false,
                     Message = "user not logged in"
                 };
             }
-            return new ClientResponseManager
+            return new ClientResponseManager<CategoryReadDto>
             {
                 IsSuccessfull = false,
                 Message = "model is not valid"
@@ -270,14 +271,14 @@ namespace BackAgain.Controllers
         }
 
         [HttpPatch("Update/MenuItem")]
-        public async Task<ActionResult<ClientResponseManager>> UpdateMenuItem([FromBody] MenuItemWriteDto model)
+        public async Task<ActionResult<ClientResponseManager<MenuItemReadDto>>> UpdateMenuItem([FromBody] MenuItemWriteDto model)
         {
             if (ModelState.IsValid)
             {
                 if (User != null)
                 {
                     var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                    var result = MenuItemService.UpdateMenuItem(model);
+                    var result = MenuItemService.UpdateMenuItem(userId, model);
 
                     if (result.IsSuccessfull)
                     {
@@ -287,13 +288,13 @@ namespace BackAgain.Controllers
 
                     return result;
                 }
-                return new ClientResponseManager
+                return new ClientResponseManager<MenuItemReadDto>
                 {
                     IsSuccessfull = false,
                     Message = "user not logged in"
                 };
             }
-            return new ClientResponseManager
+            return new ClientResponseManager<MenuItemReadDto>
             {
                 IsSuccessfull = false,
                 Message = "model is not valid"
@@ -301,7 +302,7 @@ namespace BackAgain.Controllers
         }
 
         [HttpPatch("Update/MenuItemExtra")]
-        public async Task<ActionResult<ClientResponseManager>> UpdateMenuItemExtra([FromBody] ItemExtrasWriteDto model)
+        public async Task<ActionResult<ClientResponseManager<ItemExtraReadDto>>> UpdateMenuItemExtra([FromBody] ItemExtrasWriteDto model)
         {
             if (ModelState.IsValid)
             {
@@ -317,13 +318,13 @@ namespace BackAgain.Controllers
                     }
                     return result;
                 }
-                return new ClientResponseManager
+                return new ClientResponseManager<ItemExtraReadDto>
                 {
                     IsSuccessfull = false,
                     Message = "user not logged in"
                 };
             }
-            return new ClientResponseManager
+            return new ClientResponseManager<ItemExtraReadDto>
             {
                 IsSuccessfull = false,
                 Message = "model is not valid"
@@ -331,7 +332,7 @@ namespace BackAgain.Controllers
         }
 
         [HttpPatch("Update/MenuItemOptions")]
-        public async Task<ActionResult<ClientResponseManager>> UpdateMenuItemOption([FromBody] ItemOptionWriteDto model)
+        public async Task<ActionResult<ClientResponseManager<ItemOptionReadDto>>> UpdateMenuItemOption([FromBody] ItemOptionWriteDto model)
         {
             if (ModelState.IsValid)
             {
@@ -346,13 +347,13 @@ namespace BackAgain.Controllers
                     }
                     return result;
                 }
-                return new ClientResponseManager
+                return new ClientResponseManager<ItemOptionReadDto>
                 {
                     IsSuccessfull = false,
                     Message = "user not logged in"
                 };
             }
-            return new ClientResponseManager
+            return new ClientResponseManager<ItemOptionReadDto>
             {
                 IsSuccessfull = false,
                 Message = "model is not valid"

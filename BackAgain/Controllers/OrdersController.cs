@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using ITerminalService = BackAgain.Service.Interface.ITerminalService;
@@ -29,11 +30,18 @@ namespace BackAgain.Controllers
             _TransactionService = TransactionService;
             _webSocketService = WebsocketService;
             _TerminalService = TerminalService;
+
         }
 
         [HttpPost("")]
-        public async Task<ActionResult<ClientResponseManager>> CreateOrder([FromBody] OrderWriteDto Model)
+        public async Task<ActionResult<ClientResponseManager<string>>> CreateOrder([FromBody] OrderWriteDto Model)
         {
+
+          /*  using (var http = new HttpClient())
+            {
+                var returnable = await (http.SendAsync(new HttpRequestMessage().);
+            }*/
+
             if (ModelState.IsValid)
             {
                 var user = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -41,11 +49,14 @@ namespace BackAgain.Controllers
 
                 if (user != null)
                 {
+                    var terminalResult = _TerminalService.GetTerminalBySerial(TerminalId.Value, user.Value);
                     Model.UserId = user.Value;
+                    Model.POSSerial = terminalResult.ResponseObject.PosSerial;
+                    Model.TerminalSerial = terminalResult.ResponseObject.Serial;
                     var result = await _OrderService.CreateOrder(Model);
                     if (result.IsSuccessfull)
                     {
-                        var terminalResult = _TerminalService.GetTerminalBySerial(user.Value, TerminalId.Value);
+                        
 
                         if (terminalResult.IsSuccessfull)
                         {
@@ -56,25 +67,27 @@ namespace BackAgain.Controllers
                             await _webSocketService.SendToPOSBySerial(user.Value, terminal.PosSerial, WebSocketMessageType.NewOrderPlaced, "order is placed", transaction.Id);
                         }
 
-                        return new ClientResponseManager
+                        return new ClientResponseManager<string>
                         {
                             IsSuccessfull = true,
-                            Message = result.Message
+                            Message = result.Message,
+                            ResponseObject = result.ResponseObject.Id
                         };
                     }
-                    return new ClientResponseManager
+                    return new ClientResponseManager<string>
                     {
                         IsSuccessfull = true,
-                        Message = "Order Placed, error might have ocurred in pos notification"
+                        Message = "Order Placed, error might have ocurred in pos notification",
+                        ResponseObject = result.ResponseObject.Id
                     };
                 }
-                return new ClientResponseManager
+                return new ClientResponseManager<string>
                 {
                     IsSuccessfull = false,
                     Message = "User not found"
                 };
             }
-            return new ClientResponseManager
+            return new ClientResponseManager<string>
             {
                 IsSuccessfull = false,
                 Message = "Model not correct"
@@ -126,7 +139,7 @@ namespace BackAgain.Controllers
         }
 
         //used by pos
-        [HttpPost("UpdateState/{OrderId}/{State}")] // confirm or cancel
+        [HttpPatch("UpdateState/{OrderId}/{State}")] // confirm or cancel
         public async Task<ActionResult<ClientResponseManager>> UpdateOrderStatus(string OrderId, int State)
         {
             if (ModelState.IsValid)

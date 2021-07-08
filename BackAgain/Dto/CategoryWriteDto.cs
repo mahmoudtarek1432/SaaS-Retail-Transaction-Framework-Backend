@@ -8,6 +8,7 @@ namespace BackAgain.Dto
 {
     public class CategoryWriteDto
     {
+        public string Id { get; set; }
         [Required]
         public string MenuId { get; set; }
 

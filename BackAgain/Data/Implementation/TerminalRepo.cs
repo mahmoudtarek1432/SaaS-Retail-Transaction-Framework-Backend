@@ -32,7 +32,7 @@ namespace BackAgain.Data
             return _ctx._Terminals.Where(e => e.Serial == Serial).FirstOrDefault();
         }
 
-        public IEnumerable<Terminal> GetTerminalsByPOSId(string PosSerial)
+        public IEnumerable<Terminal> GetTerminalsByPOSSerial(string PosSerial)
         {
             return _ctx._Terminals.Where(e => e.PosSerial == PosSerial).ToList();
         }
@@ -59,25 +59,30 @@ namespace BackAgain.Data
                 };
                 _ctx._SocketConnection.Add(socketConnection);
             }
-            socketConnection.ConnectionID = connId;
-            _ctx._SocketConnection.Update(socketConnection);
+            else
+            {
+                socketConnection.ConnectionID = connId;
+                _ctx._SocketConnection.Update(socketConnection);
+            }
+           
 
             return socketConnection;
         }
 
         public IEnumerable<SocketConnection> GetTerminalsConnIDByUserId(string UserId)
         {
-            return _ctx._Terminals.Where( p => p.UserId == UserId).Select(TerminalSocket);
+            return _ctx._Terminals.Where( p => p.UserId == UserId).ToList().Select(TerminalSocket).Where(e => e != null);
         }
 
         public SocketConnection GetConnIDByTerminalSerial(string TerminalSerial)
         {
-            return _ctx._Terminals.Where(T => T.Serial == TerminalSerial).Select(TerminalSocket).FirstOrDefault();
+            return _ctx._Terminals.Where(T => T.Serial == TerminalSerial).ToList().Select(TerminalSocket).FirstOrDefault();
         }
 
         //functional 
         private SocketConnection TerminalSocket(Terminal ter)
         {
+            var x = 0;
             return _ctx._SocketConnection.Where(sc => sc.TerminalId == ter.Id).FirstOrDefault();
         }
 

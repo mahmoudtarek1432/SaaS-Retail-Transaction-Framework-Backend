@@ -33,7 +33,7 @@ namespace BackAgain.Service
             return _mapper.Map<IEnumerable<ItemOptionReadDto>>(GetItemOption(MenuItemOption));
         }
 
-        public async Task<ClientResponseManager<ItemOption>> CreateMenuItemOption(string userId, ItemOptionWriteDto MenuItemOptionDto)
+        public async Task<ClientResponseManager<ItemOptionReadDto>> CreateMenuItemOption(string userId, ItemOptionWriteDto MenuItemOptionDto)
         {
             var ItemOption = _mapper.Map<ItemOption>(MenuItemOptionDto);
             ItemOption.UserId = userId;
@@ -44,26 +44,26 @@ namespace BackAgain.Service
             {
                 try
                 {
-                    await _ItemOptionsRepo.CreateMenuItemOption(ItemOption);
+                    ItemOption = await _ItemOptionsRepo.CreateMenuItemOption(ItemOption);
                     _ItemOptionsRepo.SaveChanges();
                 }
                 catch (Exception e)
                 {
-                    return new ClientResponseManager<ItemOption>
+                    return new ClientResponseManager<ItemOptionReadDto>
                     {
 
                         Message = "Menu Item Creation Failed.",
                         IsSuccessfull = false
                     };
                 }
-                return new ClientResponseManager<ItemOption>
+                return new ClientResponseManager<ItemOptionReadDto>
                 {
-                    ResponseObject = ItemOption,
+                    ResponseObject = _mapper.Map<ItemOptionReadDto>(ItemOption),
                     Message = "menu item Successfully created.",
                     IsSuccessfull = true
                 };
             }
-            return new ClientResponseManager<ItemOption>
+            return new ClientResponseManager<ItemOptionReadDto>
             {
 
                 Message = "Menu Item Creation Failed. MenuItemId doesn't belong to user",
@@ -71,26 +71,27 @@ namespace BackAgain.Service
             };
         }
 
-        public ClientResponseManager UpdateMenuItemOption(ItemOptionWriteDto itemDto)
+        public ClientResponseManager<ItemOptionReadDto> UpdateMenuItemOption(ItemOptionWriteDto itemDto)
         {
+            var item = _mapper.Map<ItemOption>(itemDto);
             try
             {
-                var item = _mapper.Map<ItemOption>(itemDto);
                 _ItemOptionsRepo.UpdateMenuItemOption(item);
                 _ItemOptionsRepo.SaveChanges();
             }
             catch (Exception e)
             {
-                return new ClientResponseManager
+                return new ClientResponseManager<ItemOptionReadDto>
                 {
-                    Message = "item option Successfully updated.",
-                    IsSuccessfull = true
+                    Message = "item optin update not successful.",
+                    IsSuccessfull = false
                 };
             }
-            return new ClientResponseManager
+            return new ClientResponseManager<ItemOptionReadDto>
             {
-                Message = "item optin update not successful.",
-                IsSuccessfull = false
+                ResponseObject = _mapper.Map<ItemOptionReadDto>(item),
+                Message = "item option Successfully updated.",
+                IsSuccessfull = true
             };
         }
 

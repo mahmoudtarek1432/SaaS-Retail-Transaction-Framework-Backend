@@ -17,9 +17,9 @@ namespace BackAgain.Model
 
         POSNotConnected,
 
-        SettingsUpdated,
+        SettingsUpdated,//
 
-        MenuUpdated,
+        MenuUpdated,//
         
         NewOrderPlaced,
 
@@ -27,10 +27,10 @@ namespace BackAgain.Model
 
         CommentAdded,
 
-        OrderConfirmed,
+        OrderConfirmed,//
 
         OrderComplete,
 
-        OrderCancelled,
+        OrderCancelled,//
     }
 }

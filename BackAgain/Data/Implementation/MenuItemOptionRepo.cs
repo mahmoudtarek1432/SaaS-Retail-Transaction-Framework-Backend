@@ -44,7 +44,7 @@ namespace BackAgain.Data
 
         public void SaveChanges()
         {
-            _ctx.SaveChangesAsync();
+            _ctx.SaveChanges();
         }
     }
 }

@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace BackAgain.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class TerminalAuthController : ControllerBase
     {
         private readonly ITerminalAuthService _TerminalAuthService;
@@ -18,8 +20,8 @@ namespace BackAgain.Controllers
             _TerminalAuthService = terAuthService;
         }
 
-        [HttpPost("Login")]
-        public ActionResult<ClientResponseManager<string>> Login([FromBody] string Serial)
+        [HttpPost("Login/{Serial}")]
+        public ActionResult<ClientResponseManager<string>> Login(string Serial)
         {
             if (ModelState.IsValid)
             {
@@ -52,5 +54,30 @@ namespace BackAgain.Controllers
                 Message = "Token not correct or expired"
             };
         }
+
+        [HttpGet("CheckAuth")]
+        public ActionResult<ClientResponseManager<string>> TerminalCheckAuth()
+        {
+
+            if (User != null)
+            {
+                var test = HttpContext.Request.Headers;
+                var user = User.FindFirst(ClaimTypes.SerialNumber);
+                if (user != null)
+                {
+                    return new ClientResponseManager<string>
+                    {
+                        IsSuccessfull = true,
+                        Message = "Token valid"
+                    };
+                }
+            }
+            return new ClientResponseManager<string>
+            {
+                IsSuccessfull = false,
+                Message = "user not logged in"
+            };
+        }
+
     }
 }

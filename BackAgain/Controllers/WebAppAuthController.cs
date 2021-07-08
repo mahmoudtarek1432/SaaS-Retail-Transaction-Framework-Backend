@@ -98,6 +98,29 @@ namespace BackAgain.Controllers
             };
         }
 
+        [HttpGet("CheckAuth")]
+        public async Task<ActionResult<ClientResponseManager<string>>> CheckAuth()
+        {
+            
+            if (User != null)
+            {
+                var user = User.FindFirst(ClaimTypes.NameIdentifier);
+                if(user != null)
+                {
+                    return new ClientResponseManager<string>
+                    {
+                        IsSuccessfull = true,
+                        Message = "Token valid"
+                    };
+                }
+            }
+            return new ClientResponseManager<string>
+            {
+                IsSuccessfull = false,
+                Message = "user not logged in"
+            };
+        }
+
         [HttpGet("ConfirmMail")]
         public async Task<ActionResult<ClientResponseManager<string>>> ConfirmMail(string userId, string token)
         {

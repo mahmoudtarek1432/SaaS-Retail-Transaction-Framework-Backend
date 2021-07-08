@@ -13,9 +13,9 @@ namespace BackAgain.Service
 
         IEnumerable<MenuItemReadDto> GetViewableMenuItem(string categoryId);
 
-        Task<ClientResponseManager<MenuItem>> CreateMenuItem(string userId, MenuItemWriteDto MenuItemDto);
+        Task<ClientResponseManager<MenuItemReadDto>> CreateMenuItem(string userId, MenuItemWriteDto MenuItemDto);
 
-        ClientResponseManager UpdateMenuItem(MenuItemWriteDto itemDto);
+        ClientResponseManager<MenuItemReadDto> UpdateMenuItem(string userId, MenuItemWriteDto itemDto);
 
         //extras and option should be deleted first
         void DeleteItemById(string ItemId);

@@ -1,5 +1,6 @@
 ﻿using BackAgain.Dto;
 using BackAgain.Service;
+using BackAgain.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +18,12 @@ namespace BackAgain.Controllers
     public class POSController : ControllerBase
     {
         private readonly IPosService _PosService;
+        private readonly ITerminalService _terminalService;
 
-        public POSController(IPosService PosService)
+        public POSController(IPosService PosService, ITerminalService terminalService)
         {
             _PosService = PosService;
+            _terminalService = terminalService;
         }
 
         [HttpPost("CreatePos")]
@@ -48,6 +51,9 @@ namespace BackAgain.Controllers
                 if(user != null)
                 {
                     var result = _PosService.getAllPOSsByUserId(user.Value);
+                    var Poss = result.ResponseObject.ToList();
+                    Poss.ForEach(P => P.Terminals = _terminalService.getAllTerminalsByPosSerial(user.Value, P.Serial).ResponseObject);
+                    result.ResponseObject = Poss;
                     return result;
                 }
                 return new ClientResponseManager<IEnumerable<POSReadDto>>

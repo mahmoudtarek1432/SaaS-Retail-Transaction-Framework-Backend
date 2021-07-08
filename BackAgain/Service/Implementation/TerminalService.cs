@@ -25,6 +25,8 @@ namespace BackAgain.Service.Implementation
         {
             try
             {
+                model.Table = 0;
+                model.state = 1;
                 var terminalData = _mapper.Map<Terminal>(model);
                 terminalData.Serial = Guid.NewGuid().ToString();
                 terminalData.UserId = UserId;
@@ -48,14 +50,18 @@ namespace BackAgain.Service.Implementation
 
         public ClientResponseManager<IEnumerable<TerminalReadDto>> getAllTerminalsByPosSerial(string userId, string posSerial)
         {
-            var Ters = _TerminalRepo.GetTerminalsByPOSId(posSerial);
+            var Ters = _TerminalRepo.GetTerminalsByPOSSerial(posSerial);
 
-            if(Ters != null)
+            if(Ters.Count() > 0)
             {
                 if (Ters.FirstOrDefault().UserId == userId)
                 {
-                    var TerReadDto = Ters.Select(_TerminalRepo.ConvertToReadDto)
+                   var TerReadDto = Ters.Select(_TerminalRepo.ConvertToReadDto)
                                          .Select(_TerminalRepo.getState);
+                    /*var terminals = Ters.ToList();
+                    var readableTerminals = new List<TerminalReadDto>();
+                    terminals.ForEach(T => { readableTerminals.Add(_TerminalRepo.ConvertToReadDto(T)); readableTerminals[readableTerminals.Count()-1] = _TerminalRepo.getState(readableTerminals[readableTerminals.Count()-1]); });
+                    */
                     return new ClientResponseManager<IEnumerable<TerminalReadDto>>
                     {
                         IsSuccessfull = true,

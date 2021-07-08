@@ -30,7 +30,7 @@ namespace BackAgain.Controllers
         }
 
         [HttpPost("CheckForUpdates")]
-        public ClientResponseManager<VersionUpdateTypes> CheckForUpdates([FromBody] VersionReadDto version)
+        public ClientResponseManager<int> CheckForUpdates([FromBody] VersionReadDto version)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userId != null)
@@ -38,7 +38,7 @@ namespace BackAgain.Controllers
                 var result = _VersionRepo.CheckTerminalVersion(userId.Value, version);
                 return result;
             }
-            return new ClientResponseManager<VersionUpdateTypes>
+            return new ClientResponseManager<int>
             {
                 IsSuccessfull = false,
                 Message = "user credentials not correct"
@@ -52,7 +52,8 @@ namespace BackAgain.Controllers
             if (userId != null)
             {
                 var Menu = _MenuService.GetFullMenu(userId.Value);
-                var result = _VersionRepo.MenuUpdate(userId.Value,Menu.ResponseObject);
+                var result = _VersionRepo.MenuUpdate(userId.Value, Menu.ResponseObject);
+                result.menu.Categories.ForEach(C => { if (C.Items == null) C.Items = new List<MenuItemReadDto>(); });
                 return new ClientResponseManager<TerminalMenuDto>
                 {
                     ResponseObject = result,

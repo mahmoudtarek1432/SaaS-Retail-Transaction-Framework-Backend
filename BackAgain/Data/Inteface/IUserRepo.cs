@@ -17,5 +17,6 @@ namespace BackAgain.Data
         Task<bool> changePassword(CustomIdentityUser identityUser, string newPassword);
         Task<ClientResponseManager<string>> ConfirmMail(CustomIdentityUser identityUser, string Token);
         Task<bool> CheckPassword(string UserId, string Password);
+        Task UpdateWebAppConnId(string userId, string ConnId);
     }
 }

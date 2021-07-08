@@ -12,7 +12,7 @@ namespace BackAgain.Data
         Task CreateTerminal(Terminal model);
         IEnumerable<Terminal> GetTerminalsByUserId(string UserId);
         Terminal GetTerminalBySerial(string Serial);
-        IEnumerable<Terminal> GetTerminalsByPOSId(string PosSerial);
+        IEnumerable<Terminal> GetTerminalsByPOSSerial(string PosSerial);
         IEnumerable<SocketConnection> GetTerminalsConnIDByUserId(string UserId);
         void RemoveTerminal(string Serial);
         void UpdateTerminal(Terminal user);

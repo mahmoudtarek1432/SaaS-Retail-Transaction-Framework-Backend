@@ -17,5 +17,6 @@ namespace BackAgain.Dto
 
         public string PosState { get; set; } //got from state DBtable
 
+        public IEnumerable<TerminalReadDto> Terminals { get; set; }
     }
 }

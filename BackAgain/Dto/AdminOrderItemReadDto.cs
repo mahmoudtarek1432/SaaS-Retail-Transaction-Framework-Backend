@@ -21,8 +21,6 @@ namespace BackAgain.Dto
 
         public string Image { get; set; }
 
-        public bool Display { get; set; }
-
         public int Quantity { get; set; }
 
         public List<AdminOrderItemExtraReadDto> OrderExtras { get; set; }

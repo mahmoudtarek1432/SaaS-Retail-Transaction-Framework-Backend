@@ -8,6 +8,7 @@ namespace BackAgain.Dto
 {
     public class ItemOptionWriteDto
     {
+        public string Id { get; set; }
         [Required]
         public string ItemId { get; set; }
 

@@ -79,7 +79,7 @@ namespace BackAgain.Data.Implementation
 
         public OrderTransaction GetOrderTransaction(string TransactionId)
         {
-            return _ctx._OrderTransactions.Where(OT => OT.TransactionID == TransactionId).FirstOrDefault();
+            return _ctx._OrderTransactions.Where(OT => OT.TransactionID == TransactionId).ToList().FirstOrDefault();
         }
 
         public IEnumerable<TransactionAffiliates> GetTransactionAffiliatesByTransactionId(string TransactionId)

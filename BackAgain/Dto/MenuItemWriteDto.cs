@@ -8,6 +8,7 @@ namespace BackAgain.Dto
 {
     public class MenuItemWriteDto
     {
+        public string Id { get; set; }
         [Required]
         public string CategoryId { get; set; }
 
@@ -20,17 +21,13 @@ namespace BackAgain.Dto
         [Required]
         public string Description { get; set; }
 
-        [Required]
-        public string Image { get; set; } //base 64 string
+        public string Image { get; set; } //string url
 
         [Required]
         public bool Display { get; set; }
 
         [Required]
         public string Code { get; set; }
-
-        [Required]
-        public bool HasOptions { get; set; }
 
     }
 }
